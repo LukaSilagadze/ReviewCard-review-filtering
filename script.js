@@ -46,10 +46,6 @@ async function loadBusiness(){
       document.querySelector('.brandmark').style.display = 'none';
     }
 
-    if(business.accentColor){
-      applyAccentColor(business.accentColor);
-    }
-
     buildStars();
     show('stageRating');
   }catch(err){
@@ -57,26 +53,15 @@ async function loadBusiness(){
   }
 }
 
-function applyAccentColor(hex){
-  document.documentElement.style.setProperty('--bottle', hex);
-  document.documentElement.style.setProperty('--bottle-light', lighten(hex, 0.18));
-}
-
-function lighten(hex, amount){
-  const c = hex.replace('#','');
-  const num = parseInt(c.length === 3 ? c.split('').map(ch=>ch+ch).join('') : c, 16);
-  let r = (num >> 16) & 255, g = (num >> 8) & 255, b = num & 255;
-  r = Math.round(r + (255 - r) * amount);
-  g = Math.round(g + (255 - g) * amount);
-  b = Math.round(b + (255 - b) * amount);
-  return `rgb(${r}, ${g}, ${b})`;
-}
-
 function buildStars(){
   const starsEl = document.getElementById('stars');
   for(let i=1;i<=5;i++){
     const btn = document.createElement('button');
     btn.className = 'star-btn';
+    btn.type = 'button';
+    btn.setAttribute('role', 'radio');
+    btn.setAttribute('aria-label', `${i} star${i === 1 ? '' : 's'}`);
+    btn.setAttribute('aria-checked', 'false');
     btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>';
     btn.addEventListener('click', () => setRating(i));
     starsEl.appendChild(btn);
@@ -85,14 +70,17 @@ function buildStars(){
 
 function setRating(n){
   rating = n;
-  document.querySelectorAll('.star-btn').forEach((b, idx) => b.classList.toggle('lit', idx < n));
+  document.querySelectorAll('.star-btn').forEach((b, idx) => {
+    b.classList.toggle('lit', idx < n);
+    b.setAttribute('aria-checked', idx === n - 1 ? 'true' : 'false');
+  });
   document.getElementById('ratingLabel').textContent = labels[n];
   document.getElementById('continueBtn').disabled = false;
 }
 
 function goToGoogle(){
   show('stageGoogle');
-  setTimeout(() => { window.location.href = business.googleReviewLink; }, 450);
+  setTimeout(() => { window.location.href = business.googleReviewLink; }, 0);
 }
 
 document.getElementById('continueBtn').addEventListener('click', () => {
