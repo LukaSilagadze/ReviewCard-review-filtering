@@ -43,6 +43,8 @@ async function loadBusiness(){
       applyAccentColor(business.accentColor);
     }
 
+    preconnectToGoogle(business.googleReviewLink);
+
     if(business.logoUrl){
       const logo = document.getElementById('bizLogo');
       logo.src = business.logoUrl;
@@ -54,6 +56,18 @@ async function loadBusiness(){
     show('stageRating');
   }catch(err){
     show('stageError');
+  }
+}
+
+function preconnectToGoogle(url){
+  try{
+    const origin = new URL(url).origin;
+    const link = document.createElement('link');
+    link.rel = 'preconnect';
+    link.href = origin;
+    document.head.appendChild(link);
+  }catch(err){
+    // Skip malformed URLs silently.
   }
 }
 
