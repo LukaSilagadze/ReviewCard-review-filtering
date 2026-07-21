@@ -39,6 +39,10 @@ async function loadBusiness(){
     business = data;
     document.getElementById('bizName').textContent = business.name;
 
+    if(business.accentColor){
+      applyAccentColor(business.accentColor);
+    }
+
     if(business.logoUrl){
       const logo = document.getElementById('bizLogo');
       logo.src = business.logoUrl;
@@ -51,6 +55,37 @@ async function loadBusiness(){
   }catch(err){
     show('stageError');
   }
+}
+
+function applyAccentColor(value){
+  const hex = normalizeHexColor(value);
+  if(!hex){ return; }
+
+  const { r, g, b } = hexToRgb(hex);
+  const darken = channel => Math.round(channel * 0.84);
+  const root = document.documentElement.style;
+
+  root.setProperty('--blue', hex);
+  root.setProperty('--blue-dark', `rgb(${darken(r)}, ${darken(g)}, ${darken(b)})`);
+  root.setProperty('--blue-rgb', `${r}, ${g}, ${b}`);
+}
+
+function normalizeHexColor(value){
+  const color = String(value).trim();
+  if(/^#[0-9a-f]{6}$/i.test(color)){ return color; }
+  if(/^#[0-9a-f]{3}$/i.test(color)){
+    return `#${color.slice(1).split('').map(char => char + char).join('')}`;
+  }
+  return null;
+}
+
+function hexToRgb(hex){
+  const value = Number.parseInt(hex.slice(1), 16);
+  return {
+    r: (value >> 16) & 255,
+    g: (value >> 8) & 255,
+    b: value & 255
+  };
 }
 
 function buildStars(){
