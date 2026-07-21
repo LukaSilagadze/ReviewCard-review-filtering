@@ -1,0 +1,223 @@
+:root {
+  --ivory: #faf7f0;
+  --ink: #1f1e1b;
+  --ink-soft: #6b6a63;
+  --line: #e4e0d5;
+  --bottle: #26402f;
+  --bottle-light: #3c5a45;
+  --gold: #b08d57;
+  --danger: #9c4a3c;
+  --danger-bg: #f3e6e2;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--ivory);
+  font-family: "Inter", sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+.phone {
+  width: 100%;
+  max-width: 380px;
+  background: #fff;
+  border-radius: 28px;
+  border: 1px solid var(--line);
+  padding: 40px 28px 32px;
+  min-height: 520px;
+  display: flex;
+  flex-direction: column;
+}
+.brandmark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+.brandmark .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--gold);
+}
+.brandmark span {
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.biz-name {
+  font-family: "Fraunces", serif;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 32px;
+}
+.stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.prompt-ka {
+  font-family: "Fraunces", serif;
+  font-size: 19px;
+  font-weight: 500;
+  text-align: center;
+  margin: 0 0 4px;
+  line-height: 1.35;
+}
+.prompt-en {
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-soft);
+  margin: 0 0 32px;
+}
+.stars {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.star-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  line-height: 0;
+}
+.star-btn svg {
+  width: 34px;
+  height: 34px;
+  stroke: var(--gold);
+  stroke-width: 1.4;
+  fill: none;
+  transition:
+    fill 0.2s,
+    transform 0.15s;
+}
+.star-btn.lit svg {
+  fill: var(--gold);
+}
+.star-btn:active svg {
+  transform: scale(0.9);
+}
+.rating-label {
+  text-align: center;
+  font-size: 12px;
+  color: var(--ink-soft);
+  height: 16px;
+  margin-bottom: 20px;
+}
+.primary-btn {
+  width: 100%;
+  padding: 15px;
+  border-radius: 12px;
+  border: none;
+  background: var(--bottle);
+  color: #fff;
+  font-family: "Inter", sans-serif;
+  font-size: 14.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.primary-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.primary-btn:not(:disabled):hover {
+  background: var(--bottle-light);
+}
+textarea {
+  width: 100%;
+  min-height: 110px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  padding: 12px 14px;
+  font-family: "Inter", sans-serif;
+  font-size: 13.5px;
+  color: var(--ink);
+  resize: none;
+  margin-bottom: 16px;
+}
+textarea:focus {
+  outline: none;
+  border-color: var(--bottle-light);
+}
+.badge {
+  display: inline-block;
+  font-size: 11px;
+  padding: 3px 10px;
+  border-radius: 100px;
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.badge-row {
+  text-align: center;
+  margin-bottom: 14px;
+}
+.tiny-link {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--ink-soft);
+  opacity: 0.75;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+}
+.spinner {
+  width: 26px;
+  height: 26px;
+  margin: 0 auto 22px;
+  border-radius: 50%;
+  border: 2px solid var(--line);
+  border-top-color: var(--bottle);
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.seal {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 20px;
+  border-radius: 50%;
+  border: 1.5px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.seal svg {
+  width: 26px;
+  height: 26px;
+  stroke: var(--gold);
+  fill: none;
+  stroke-width: 1.6;
+}
+.footer-note {
+  text-align: center;
+  font-size: 10.5px;
+  color: var(--ink-soft);
+  opacity: 0.7;
+  margin-top: 24px;
+}
+.error-box {
+  text-align: center;
+  font-size: 13px;
+  color: var(--danger);
+  padding: 20px 0;
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="ka">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ReviewCard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://script.google.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="phone">
+  <div class="brandmark"><div class="dot"></div><span>ReviewCard</span></div>
+  <img id="bizLogo" style="display:none; max-width:120px; max-height:60px; margin:0 auto 16px;" alt="">
+  <p class="biz-name" id="bizName">Loading...</p>
+
+  <div class="stage" id="stageRating" style="display:none;">
+    <p class="prompt-ka">როგორი იყო თქვენი გამოცდილება დღეს?</p>
+    <p class="prompt-en">How was your visit today?</p>
+    <div class="stars" id="stars"></div>
+    <p class="rating-label" id="ratingLabel">&nbsp;</p>
+    <button class="primary-btn" id="continueBtn" disabled>განაგრძეთ / Continue</button>
+  </div>
+
+  <div class="stage" id="stageGoogle" style="display:none;">
+    <div class="spinner"></div>
+    <p class="prompt-ka">გმადლობთ! გადამისამართებთ Google-ზე...</p>
+    <p class="prompt-en">Thanks — taking you to Google now.</p>
+  </div>
+
+  <div class="stage" id="stageFeedback" style="display:none;">
+    <div class="badge-row"><span class="badge">Private, not public</span></div>
+    <p class="prompt-ka">გვითხარით, რა შეგვიძლია გავაუმჯობესოთ</p>
+    <p class="prompt-en">Tell us what we can do better — this goes straight to the manager.</p>
+    <textarea id="feedbackText" placeholder="დაწერეთ აქ... / Write here..."></textarea>
+    <button class="primary-btn" id="sendFeedbackBtn">გაგზავნა / Send privately</button>
+    <button class="tiny-link" id="alsoGoogle">Prefer Google? Leave a review there instead</button>
+  </div>
+
+  <div class="stage" id="stageThanks" style="display:none;">
+    <div class="seal"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
+    <p class="prompt-ka" style="margin-bottom:6px;">მადლობა!</p>
+    <p class="prompt-en">The manager has been notified directly.</p>
+  </div>
+
+  <div class="stage" id="stageError" style="display:none;">
+    <p class="error-box">Something went wrong loading this page.<br>Please try tapping the card again.</p>
+  </div>
+
+  <p class="footer-note">ReviewCard</p>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
