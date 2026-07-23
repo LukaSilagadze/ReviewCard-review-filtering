@@ -8,7 +8,6 @@ const params = new URLSearchParams(window.location.search);
 const bizId = params.get('biz');
 let business = null;
 let rating = 0;
-const labels = ['','Poor','Fair','Good','Very good','Excellent'];
 
 function show(id){
   ['stageRating','stageGoogle','stageFeedback','stageThanks','stageError'].forEach(s=>{
@@ -48,11 +47,10 @@ async function loadBusiness(){
     if(business.logoUrl){
       const logo = document.getElementById('bizLogo');
       logo.src = business.logoUrl;
-      logo.style.display = 'block';
+      document.getElementById('logoFrame').style.display = 'block';
       document.querySelector('.brandmark').style.display = 'none';
     }
 
-    buildStars();
     show('stageRating');
   }catch(err){
     show('stageError');
@@ -102,39 +100,19 @@ function hexToRgb(hex){
   };
 }
 
-function buildStars(){
-  const starsEl = document.getElementById('stars');
-  for(let i=1;i<=5;i++){
-    const btn = document.createElement('button');
-    btn.className = 'star-btn';
-    btn.type = 'button';
-    btn.setAttribute('role', 'radio');
-    btn.setAttribute('aria-label', `${i} star${i === 1 ? '' : 's'}`);
-    btn.setAttribute('aria-checked', 'false');
-    btn.innerHTML = '<svg viewBox="0 0 24 24"><polygon points="12 2 15 9 22 9.5 17 14.5 18.5 22 12 18 5.5 22 7 14.5 2 9.5 9 9"/></svg>';
-    btn.addEventListener('click', () => setRating(i));
-    starsEl.appendChild(btn);
-  }
-}
-
-function setRating(n){
-  rating = n;
-  document.querySelectorAll('.star-btn').forEach((b, idx) => {
-    b.classList.toggle('lit', idx < n);
-    b.setAttribute('aria-checked', idx === n - 1 ? 'true' : 'false');
-  });
-  document.getElementById('ratingLabel').textContent = labels[n];
-  document.getElementById('continueBtn').disabled = false;
-}
-
 function goToGoogle(){
   show('stageGoogle');
   setTimeout(() => { window.location.href = business.googleReviewLink; }, 0);
 }
 
-document.getElementById('continueBtn').addEventListener('click', () => {
-  if(rating >= 4){ goToGoogle(); }
-  else{ show('stageFeedback'); }
+document.getElementById('goodExperienceBtn').addEventListener('click', () => {
+  rating = 5;
+  goToGoogle();
+});
+
+document.getElementById('badExperienceBtn').addEventListener('click', () => {
+  rating = 1;
+  show('stageFeedback');
 });
 
 document.getElementById('alsoGoogle').addEventListener('click', goToGoogle);
