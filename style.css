@@ -382,7 +382,6 @@ textarea:focus { border-color: var(--blue); }
 }
 
 .footer-note {
-  margin-top: 28px;
   color: var(--gray);
   font-size: 10.5px;
   font-weight: 500;
