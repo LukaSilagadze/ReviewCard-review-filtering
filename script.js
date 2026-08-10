@@ -8,6 +8,71 @@ const params = new URLSearchParams(window.location.search);
 const bizId = params.get('biz');
 let business = null;
 let rating = 0;
+let currentLanguage = 'ka';
+
+const translations = {
+  ka: {
+    chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
+    step1: 'ნაბიჯი 1 / 2', step2: 'ნაბიჯი 2 / 2', complete: 'დასრულებულია',
+    ratingPrompt: 'როგორ შეაფასებდით გამოცდილებას?', chooseExperience: 'აირჩიეთ თქვენი გამოცდილება',
+    positive: 'დადებითად', negative: 'უარყოფითად', thanks: 'მადლობა!',
+    googlePrompt: 'გთხოვთ შეგვაფასოთ გუგლზეც', feedbackPrompt: 'რა გავაუმჯობესოთ?',
+    feedbackPlaceholder: 'დაწერეთ აქ...', send: 'გაგზავნა', sending: 'იგზავნება...',
+    alsoGoogle: 'გირჩევნიათ Google? დატოვეთ შეფასება იქ',
+    errorLine1: 'ამ გვერდის ჩატვირთვისას რაღაც შეცდომა დაფიქსირდა.',
+    errorLine2: 'გთხოვთ, ხელახლა სცადოთ ბარათზე შეხება.', poweredBy: 'შექმნილია'
+  },
+  en: {
+    chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
+    step1: 'Step 1 of 2', step2: 'Step 2 of 2', complete: 'Complete',
+    ratingPrompt: 'How would you rate your experience?', chooseExperience: 'Choose your experience',
+    positive: 'Positive', negative: 'Negative', thanks: 'Thank you!',
+    googlePrompt: 'Please leave us a review on Google too', feedbackPrompt: 'What can we improve?',
+    feedbackPlaceholder: 'Write here...', send: 'Send', sending: 'Sending...',
+    alsoGoogle: 'Prefer Google? Leave a review there instead',
+    errorLine1: 'Something went wrong while loading this page.',
+    errorLine2: 'Please tap the card and try again.', poweredBy: 'Powered by'
+  },
+  ru: {
+    chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
+    step1: 'Шаг 1 из 2', step2: 'Шаг 2 из 2', complete: 'Готово',
+    ratingPrompt: 'Как бы вы оценили свой опыт?', chooseExperience: 'Оцените свой опыт',
+    positive: 'Положительно', negative: 'Отрицательно', thanks: 'Спасибо!',
+    googlePrompt: 'Пожалуйста, оставьте нам отзыв и в Google', feedbackPrompt: 'Что мы можем улучшить?',
+    feedbackPlaceholder: 'Напишите здесь...', send: 'Отправить', sending: 'Отправка...',
+    alsoGoogle: 'Предпочитаете Google? Оставьте отзыв там',
+    errorLine1: 'При загрузке страницы произошла ошибка.',
+    errorLine2: 'Пожалуйста, коснитесь карточки и попробуйте снова.', poweredBy: 'При поддержке'
+  }
+};
+
+function translate(key){
+  return translations[currentLanguage][key];
+}
+
+function applyLanguage(language){
+  if(!translations[language]){ return; }
+  currentLanguage = language;
+  document.documentElement.lang = language;
+
+  document.querySelectorAll('[data-i18n]').forEach(element => {
+    element.textContent = translate(element.dataset.i18n);
+  });
+  document.querySelectorAll('[data-i18n-aria]').forEach(element => {
+    element.setAttribute('aria-label', translate(element.dataset.i18nAria));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
+    element.placeholder = translate(element.dataset.i18nPlaceholder);
+  });
+
+  const selectedButton = document.querySelector(`[data-language="${language}"]`);
+  const selectedFlag = document.querySelector('.language-picker summary img');
+  const optionFlag = selectedButton.querySelector('img');
+  selectedFlag.src = optionFlag.src;
+  selectedFlag.alt = selectedButton.getAttribute('aria-label');
+
+  try{ localStorage.setItem('reviewcard-language', language); }catch(err){ /* Storage may be unavailable. */ }
+}
 
 function show(id){
   ['stageRating','stageGoogle','stageFeedback','stageThanks','stageError'].forEach(s=>{
@@ -36,7 +101,9 @@ async function loadBusiness(){
       notifyEmail: row.notify_email
     };
     business = data;
-    document.getElementById('bizName').textContent = business.name;
+    const businessName = document.getElementById('bizName');
+    businessName.removeAttribute('data-i18n');
+    businessName.textContent = business.name;
 
     if(business.accentColor){
       applyAccentColor(business.accentColor);
@@ -121,7 +188,7 @@ document.getElementById('sendFeedbackBtn').addEventListener('click', async () =>
   const comment = document.getElementById('feedbackText').value.trim();
   const btn = document.getElementById('sendFeedbackBtn');
   btn.disabled = true;
-  btn.textContent = 'Sending...';
+  btn.textContent = translate('sending');
 
   try{
     await fetch(`${SUPABASE_URL}/rest/v1/feedbacks`, {
@@ -154,4 +221,22 @@ document.getElementById('sendFeedbackBtn').addEventListener('click', async () =>
   show('stageThanks');
 });
 
+const languagePicker = document.querySelector('.language-picker');
+
+document.querySelectorAll('[data-language]').forEach(button => {
+  button.addEventListener('click', () => {
+    applyLanguage(button.dataset.language);
+    languagePicker.removeAttribute('open');
+  });
+});
+
+document.addEventListener('click', (event) => {
+  if(languagePicker.open && !languagePicker.contains(event.target)){
+    languagePicker.removeAttribute('open');
+  }
+});
+
+let savedLanguage = 'ka';
+try{ savedLanguage = localStorage.getItem('reviewcard-language') || 'ka'; }catch(err){ /* Use the default. */ }
+applyLanguage(savedLanguage);
 loadBusiness();
