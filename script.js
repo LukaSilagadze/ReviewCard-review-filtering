@@ -20,7 +20,10 @@ const translations = {
     feedbackPlaceholder: 'დაწერეთ აქ...', send: 'გაგზავნა', sending: 'იგზავნება...',
     alsoGoogle: 'გირჩევნიათ Google? დატოვეთ შეფასება იქ',
     errorLine1: 'ამ გვერდის ჩატვირთვისას რაღაც შეცდომა დაფიქსირდა.',
-    errorLine2: 'გთხოვთ, ხელახლა სცადოთ ბარათზე შეხება.', poweredBy: 'შექმნილია'
+    errorLine2: 'გთხოვთ, ხელახლა სცადოთ ბარათზე შეხება.', poweredBy: 'შექმნილია',
+    sendErrorTitle: 'ვერ გაიგზავნა შეტყობინება',
+    sendErrorBody: 'გთხოვთ სცადოთ ხელახლა, ან მოგვწერეთ პირდაპირ.',
+    tryAgain: 'ხელახლა ცდა', emailDirectly: 'მოგვწერეთ ელფოსტით'
   },
   en: {
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
@@ -31,7 +34,10 @@ const translations = {
     feedbackPlaceholder: 'Write here...', send: 'Send', sending: 'Sending...',
     alsoGoogle: 'Prefer Google? Leave a review there instead',
     errorLine1: 'Something went wrong while loading this page.',
-    errorLine2: 'Please tap the card and try again.', poweredBy: 'Powered by'
+    errorLine2: 'Please tap the card and try again.', poweredBy: 'Powered by',
+    sendErrorTitle: "Couldn't send your message",
+    sendErrorBody: 'Please try again, or email us directly.',
+    tryAgain: 'Try again', emailDirectly: 'Email us directly'
   },
   ru: {
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
@@ -42,7 +48,10 @@ const translations = {
     feedbackPlaceholder: 'Напишите здесь...', send: 'Отправить', sending: 'Отправка...',
     alsoGoogle: 'Предпочитаете Google? Оставьте отзыв там',
     errorLine1: 'При загрузке страницы произошла ошибка.',
-    errorLine2: 'Пожалуйста, коснитесь карточки и попробуйте снова.', poweredBy: 'При поддержке'
+    errorLine2: 'Пожалуйста, коснитесь карточки и попробуйте снова.', poweredBy: 'При поддержке',
+    sendErrorTitle: 'Не удалось отправить сообщение',
+    sendErrorBody: 'Пожалуйста, попробуйте снова или напишите нам напрямую.',
+    tryAgain: 'Попробовать снова', emailDirectly: 'Написать напрямую'
   }
 };
 
@@ -75,7 +84,7 @@ function applyLanguage(language){
 }
 
 function show(id){
-  ['stageRating','stageGoogle','stageFeedback','stageThanks','stageError'].forEach(s=>{
+  ['stageRating','stageGoogle','stageFeedback','stageThanks','stageSendError','stageError'].forEach(s=>{
     document.getElementById(s).style.display = (s===id) ? 'flex' : 'none';
   });
 }
@@ -93,10 +102,11 @@ async function loadBusiness(){
     const rows = await res.json();
     const row = rows && rows[0];
     if(!row || !row.name || !row.google_review_link){ throw new Error('bad config'); }
+    if(!/^https:\/\//i.test(row.google_review_link)){ throw new Error('unsafe google_review_link'); }
     const data = {
       name: row.name,
       googleReviewLink: row.google_review_link,
-      logoUrl: row.logo_url,
+      logoUrl: (row.logo_url && /^https:\/\//i.test(row.logo_url)) ? row.logo_url : null,
       accentColor: row.accent_color,
       notifyEmail: row.notify_email
     };
@@ -113,6 +123,10 @@ async function loadBusiness(){
 
     if(business.logoUrl){
       const logo = document.getElementById('bizLogo');
+      logo.onerror = () => {
+        document.getElementById('logoFrame').style.display = 'none';
+        document.querySelector('.brandmark').style.display = 'flex';
+      };
       logo.src = business.logoUrl;
       document.getElementById('logoFrame').style.display = 'block';
       document.querySelector('.brandmark').style.display = 'none';
@@ -184,42 +198,89 @@ document.getElementById('badExperienceBtn').addEventListener('click', () => {
 
 document.getElementById('alsoGoogle').addEventListener('click', goToGoogle);
 
-document.getElementById('sendFeedbackBtn').addEventListener('click', async () => {
-  const comment = document.getElementById('feedbackText').value.trim();
-  const btn = document.getElementById('sendFeedbackBtn');
-  btn.disabled = true;
-  btn.textContent = translate('sending');
+async function saveFeedback(comment){
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/feedbacks`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal'
+    },
+    body: JSON.stringify({ biz_id: bizId, rating: rating, comment: comment })
+  });
+  if(!response.ok){
+    throw new Error(`Feedback request failed with status ${response.status}`);
+  }
+}
 
+async function notifyBusiness(comment){
+  if(!business.notifyEmail){ return; }
   try{
-    await fetch(`${SUPABASE_URL}/rest/v1/feedbacks`, {
+    // Apps Script web apps redirect their response to a different Google origin.
+    // no-cors prevents that redirect from making an otherwise successful email
+    // request reject in the browser. The response is intentionally opaque.
+    await fetch(NOTIFY_URL, {
       method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
-      },
-      body: JSON.stringify({ biz_id: bizId, rating: rating, comment: comment })
+      mode: 'no-cors',
+      keepalive: true,
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        email: business.notifyEmail,
+        bizName: business.name,
+        rating: rating,
+        comment: comment
+      })
     });
-  }catch(err){ /* fail silently for the customer */ }
+  }catch(err){
+    console.error('Could not request the negative-feedback email.', err);
+  }
+}
 
-  if(business.notifyEmail){
+async function submitFeedback(){
+  const comment = document.getElementById('feedbackText').value.trim();
+  const sendBtn = document.getElementById('sendFeedbackBtn');
+  const retryBtn = document.getElementById('retryFeedbackBtn');
+  [sendBtn, retryBtn].forEach(btn => { btn.disabled = true; btn.textContent = translate('sending'); });
+
+  let saved = false;
+  try{
+    await saveFeedback(comment);
+    saved = true;
+  }catch(err){
+    console.error('Could not save customer feedback, retrying once.', err);
     try{
-      await fetch(NOTIFY_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-        body: JSON.stringify({
-          email: business.notifyEmail,
-          bizName: business.name,
-          rating: rating,
-          comment: comment
-        })
-      });
-    }catch(err){ /* fail silently for the customer */ }
+      await saveFeedback(comment);
+      saved = true;
+    }catch(retryErr){
+      console.error('Retry failed too.', retryErr);
+    }
   }
 
-  show('stageThanks');
-});
+  await notifyBusiness(comment);
+
+  sendBtn.disabled = false;
+  sendBtn.textContent = translate('send');
+  retryBtn.disabled = false;
+  retryBtn.textContent = translate('tryAgain');
+
+  if(saved){
+    show('stageThanks');
+    return;
+  }
+
+  const emailLink = document.getElementById('emailDirectlyLink');
+  if(business.notifyEmail){
+    emailLink.href = `mailto:${business.notifyEmail}?subject=${encodeURIComponent(business.name + ' – feedback')}&body=${encodeURIComponent(comment)}`;
+    emailLink.style.display = 'block';
+  }else{
+    emailLink.style.display = 'none';
+  }
+  show('stageSendError');
+}
+
+document.getElementById('sendFeedbackBtn').addEventListener('click', submitFeedback);
+document.getElementById('retryFeedbackBtn').addEventListener('click', submitFeedback);
 
 const languagePicker = document.querySelector('.language-picker');
 
