@@ -226,8 +226,7 @@ async function notifyBusiness(comment){
       keepalive: true,
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify({
-        email: business.notifyEmail,
-        bizName: business.name,
+        bizId: bizId,
         rating: rating,
         comment: comment
       })
