@@ -2,7 +2,7 @@
 const SUPABASE_URL = "https://tgzlwkouinonvoawoheb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ZaKmf7Q58WLqFIrIOLkbPQ_55hT16Bn";
 // Apps Script is used ONLY to send the email alert on negative feedback.
-const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbzE7cANUKGmKjf9fIIZzJt_bPtxUIhAGDyXuB-TbFBmrTLSA4zOg-yMQp-ZURE6zZ66JA/exec";
+const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbyGHJOCtxr6no8M91ig7JRZw59ZeUKnp89-br8L7JA_9MQoRhiVIX5-Y04f7rcQ_IUy/exec";
 
 const params = new URLSearchParams(window.location.search);
 const bizId = params.get('biz');
