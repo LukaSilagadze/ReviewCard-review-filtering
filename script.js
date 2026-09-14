@@ -256,7 +256,9 @@ async function submitFeedback(){
     }
   }
 
-  await notifyBusiness(comment);
+  // Email delivery must not delay confirmation of the database save (or retry UI).
+  // notifyBusiness handles its own errors and keeps the request alive on navigation.
+  void notifyBusiness(comment);
 
   sendBtn.disabled = false;
   sendBtn.textContent = translate('send');
