@@ -54,11 +54,10 @@ function processFeedbackEmails() {
           MailApp.sendEmail(
             business.notify_email,
             'ახალი უკუკავშირი კლიენტისგან ' + business.name + '-ზე',
-            'თქვენმა მომხმარებელმა ახლახანს დატოვა უკუკავშირი თქვენი ბიზნესის შესახებ.\n\n' +
+            'თქვენმა მომხმარებელმა ახლახანს დატოვა ანონიმური უკუკავშირი თქვენი ბიზნესის შესახებ.\n\n' +
             'Business: ' + business.name + '\n' +
             'Rating: ' + job.rating + '\n' +
-            'Comment: ' + (job.comment || '(no comment left)') + '\n\n' +
-            'Feedback reference: ' + job.feedback_id + '\n'
+            'Comment: ' + (job.comment || '(no comment left)')
           );
           sent = true;
         }
