@@ -1,0 +1,27 @@
+# Local credentials and environment settings
+.env
+.env.*
+!.env.example
+.clasp.json
+.clasprc.json
+credentials.json
+service-account*.json
+*.pem
+*.key
+
+# Local tooling and generated output
+node_modules/
+coverage/
+*.log
+.supabase/
+supabase/.temp/
+
+# Editor and operating-system files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+Desktop.ini
+*.swp
+*.swo
+*~

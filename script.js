@@ -1,8 +1,7 @@
 // ---- CONFIG ----
 const SUPABASE_URL = "https://tgzlwkouinonvoawoheb.supabase.co";
 const SUPABASE_KEY = "sb_publishable_ZaKmf7Q58WLqFIrIOLkbPQ_55hT16Bn";
-// Apps Script is used ONLY to send the email alert on negative feedback.
-const NOTIFY_URL = "https://script.google.com/macros/s/AKfycbyGHJOCtxr6no8M91ig7JRZw59ZeUKnp89-br8L7JA_9MQoRhiVIX5-Y04f7rcQ_IUy/exec";
+// Supabase queues email when feedback is saved; Apps Script processes it server-side.
 
 const params = new URLSearchParams(window.location.search);
 const bizId = params.get('biz');
@@ -214,28 +213,6 @@ async function saveFeedback(comment){
   }
 }
 
-async function notifyBusiness(comment){
-  if(!business.notifyEmail){ return; }
-  try{
-    // Apps Script web apps redirect their response to a different Google origin.
-    // no-cors prevents that redirect from making an otherwise successful email
-    // request reject in the browser. The response is intentionally opaque.
-    await fetch(NOTIFY_URL, {
-      method: 'POST',
-      mode: 'no-cors',
-      keepalive: true,
-      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-      body: JSON.stringify({
-        bizId: bizId,
-        rating: rating,
-        comment: comment
-      })
-    });
-  }catch(err){
-    console.error('Could not request the negative-feedback email.', err);
-  }
-}
-
 async function submitFeedback(){
   const comment = document.getElementById('feedbackText').value.trim();
   const sendBtn = document.getElementById('sendFeedbackBtn');
@@ -255,10 +232,6 @@ async function submitFeedback(){
       console.error('Retry failed too.', retryErr);
     }
   }
-
-  // Email delivery must not delay confirmation of the database save (or retry UI).
-  // notifyBusiness handles its own errors and keeps the request alive on navigation.
-  void notifyBusiness(comment);
 
   sendBtn.disabled = false;
   sendBtn.textContent = translate('send');
