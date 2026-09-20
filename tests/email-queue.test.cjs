@@ -11,7 +11,11 @@ function harness(options = {}) {
   const jobs = options.jobs || [{ id: 'job-1', lease_token: 'lease-1', biz_id: 'test', feedback_id: '42', rating: '1', comment: 'Anonymous comment' }];
   const state = { sent: [], acknowledgements: [], claims: 0, released: false, triggers: 0 };
   const context = vm.createContext({
-    PropertiesService: { getScriptProperties: () => ({ getProperty: key => key === 'SUPABASE_URL' ? 'https://example.supabase.co' : 'server-only-test-key' }) },
+    PropertiesService: { getScriptProperties: () => ({ getProperty: key => {
+      if (key === 'SUPABASE_URL') return 'https://example.supabase.co';
+      if (key === 'EMAIL_WEBHOOK_TOKEN') return options.webhookToken ?? 'test-webhook-token-with-at-least-32-characters';
+      return 'server-only-test-key';
+    } }) },
     LockService: { getScriptLock: () => ({ tryLock: () => options.locked !== true, releaseLock: () => { state.released = true; } }) },
     MailApp: {
       getRemainingDailyQuota: () => options.quota ?? 10,
@@ -52,7 +56,7 @@ test('two comments for the same business both send, without a throttle', () => {
   const { state, context } = harness({ jobs });
   context.processFeedbackEmails();
   assert.equal(state.sent.length, 2);
-  assert.ok(state.sent[0][2].includes('Feedback reference: 1'));
+  assert.ok(state.sent[0][2].includes('Feedback 1'));
   assert.ok(state.sent[0][1].includes('ახალი უკუკავშირი'));
   assert.ok(state.acknowledgements.every(ack => ack.p_sent && ack.p_error === null));
   assert.equal(state.released, true);
@@ -105,10 +109,28 @@ test('worker installation is repeatable without duplicate triggers', () => {
 
 test('old browser endpoint cannot send or enqueue an email', () => {
   const { state, context } = harness();
-  assert.equal(context.doPost().queuedByDatabase, true);
+  assert.equal(context.doPost().ok, false);
   assert.equal(state.sent.length, 0);
   assert.equal(state.claims, 0);
 });
+
+test('authenticated webhook immediately processes saved jobs', () => {
+  const { state, context } = harness();
+  const response = context.doPost({ parameter: { token: 'test-webhook-token-with-at-least-32-characters' },
+    postData: { contents: JSON.stringify({ comment: 'Untrusted incoming text' }) } });
+  assert.equal(response.ok, true);
+  assert.equal(state.sent.length, 1);
+  assert.ok(state.sent[0][2].includes('Anonymous comment'));
+  assert.ok(!state.sent[0][2].includes('Untrusted incoming text'));
+});
+
+for (const webhookToken of ['', 'too-short', 'a-different-long-secret-token-value']) {
+  test('webhook rejects missing, short, or mismatched configuration: ' + webhookToken, () => {
+    const { state, context } = harness({ webhookToken });
+    assert.equal(context.doPost({ parameter: { token: 'test-webhook-token-with-at-least-32-characters' } }).ok, false);
+    assert.equal(state.claims, 0);
+  });
+}
 
 for (const fails of [false, true]) {
   test('page ' + (fails ? 'offers retry on save failure' : 'confirms after save') + ' without a browser email request', async () => {

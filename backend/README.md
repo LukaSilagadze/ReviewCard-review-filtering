@@ -1,5 +1,9 @@
 # Queued feedback emails
 
+For prompt delivery on an existing installation, follow
+[webhook setup](WEBHOOK-SETUP.md). It wakes the worker on new jobs and retains the
+scheduled trigger as a fallback. The base setup below uses the scheduled worker.
+
 The feedback insert and email job commit in one database transaction. The page
 shows success after that commit. Apps Script picks up pending jobs every minute,
 sends the existing Georgian email, and records success or schedules a retry.
