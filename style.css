@@ -44,7 +44,7 @@ body {
   width: 100%;
   max-width: 380px;
   min-height: 520px;
-  padding: 76px 30px 30px;
+  padding: 45px 30px 30px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 28px;
@@ -596,7 +596,7 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
     max-width: none;
     min-height: 100vh;
     min-height: 100svh;
-    padding: 76px 22px 26px;
+    padding: 45px 22px 26px;
     border: none;
     border-radius: 0;
     box-shadow: none;
