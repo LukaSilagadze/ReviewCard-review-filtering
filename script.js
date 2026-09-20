@@ -11,12 +11,13 @@ let currentLanguage = 'ka';
 
 const translations = {
   ka: {
+    back: 'უკან',
     followUs: 'გამოგვყევით',
     chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
     ratingPrompt: 'როგორ შეაფასებდით გამოცდილებას?', chooseExperience: 'აირჩიეთ თქვენი გამოცდილება',
     positive: 'დადებითად', negative: 'უარყოფითად', thanks: 'მადლობა!',
     googlePrompt: 'გთხოვთ შეგვაფასოთ გუგლზეც', feedbackPrompt: 'რა გავაუმჯობესოთ?',
-    feedbackPlaceholder: 'დაწერეთ აქ...', send: 'გაგზავნა', sending: 'იგზავნება...',
+    feedbackPlaceholder: 'დატოვე ანონიმური მესიჯი...', send: 'გაგზავნა', sending: 'იგზავნება...',
     alsoGoogle: 'გირჩევნიათ Google? დატოვეთ შეფასება იქ',
     errorLine1: 'ამ გვერდის ჩატვირთვისას რაღაც შეცდომა დაფიქსირდა.',
     errorLine2: 'გთხოვთ, ხელახლა სცადოთ ბარათზე შეხება.', poweredBy: 'შექმნილია',
@@ -25,12 +26,13 @@ const translations = {
     tryAgain: 'ხელახლა ცდა', emailDirectly: 'მოგვწერეთ ელფოსტით'
   },
   en: {
+    back: 'Back',
     followUs: 'Follow us',
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
     ratingPrompt: 'How would you rate your experience?', chooseExperience: 'Choose your experience',
     positive: 'Positive', negative: 'Negative', thanks: 'Thank you!',
     googlePrompt: 'Please leave us a review on Google too', feedbackPrompt: 'What can we improve?',
-    feedbackPlaceholder: 'Write here...', send: 'Send', sending: 'Sending...',
+    feedbackPlaceholder: 'Leave an anonymous message...', send: 'Send', sending: 'Sending...',
     alsoGoogle: 'Prefer Google? Leave a review there instead',
     errorLine1: 'Something went wrong while loading this page.',
     errorLine2: 'Please tap the card and try again.', poweredBy: 'Powered by',
@@ -39,12 +41,13 @@ const translations = {
     tryAgain: 'Try again', emailDirectly: 'Email us directly'
   },
   ru: {
+    back: 'Назад',
     followUs: 'Подписывайтесь на нас',
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
     ratingPrompt: 'Как бы вы оценили свой опыт?', chooseExperience: 'Оцените свой опыт',
     positive: 'Положительно', negative: 'Отрицательно', thanks: 'Спасибо!',
     googlePrompt: 'Пожалуйста, оставьте нам отзыв и в Google', feedbackPrompt: 'Что мы можем улучшить?',
-    feedbackPlaceholder: 'Напишите здесь...', send: 'Отправить', sending: 'Отправка...',
+    feedbackPlaceholder: 'Оставьте анонимное сообщение...', send: 'Отправить', sending: 'Отправка...',
     alsoGoogle: 'Предпочитаете Google? Оставьте отзыв там',
     errorLine1: 'При загрузке страницы произошла ошибка.',
     errorLine2: 'Пожалуйста, коснитесь карточки и попробуйте снова.', poweredBy: 'При поддержке',
@@ -78,6 +81,7 @@ function applyLanguage(language){
   const optionFlag = selectedButton.querySelector('img');
   selectedFlag.src = optionFlag.src;
   selectedFlag.alt = selectedButton.getAttribute('aria-label');
+  document.getElementById('selectedLanguageCode').textContent = { ka: 'GE', en: 'EN', ru: 'RU' }[language];
 
   try{ localStorage.setItem('reviewcard-language', language); }catch(err){ /* Storage may be unavailable. */ }
 }
@@ -242,6 +246,11 @@ document.getElementById('badExperienceBtn').addEventListener('click', () => {
 
 document.getElementById('alsoGoogle').addEventListener('click', goToGoogle);
 
+document.getElementById('backToRatingBtn').addEventListener('click', () => {
+  show('stageRating');
+  document.getElementById('badExperienceBtn').focus();
+});
+
 async function saveFeedback(comment){
   const response = await fetch(`${SUPABASE_URL}/rest/v1/feedbacks`, {
     method: 'POST',
@@ -262,6 +271,8 @@ async function submitFeedback(){
   const comment = document.getElementById('feedbackText').value.trim();
   const sendBtn = document.getElementById('sendFeedbackBtn');
   const retryBtn = document.getElementById('retryFeedbackBtn');
+  const backBtn = document.getElementById('backToRatingBtn');
+  backBtn.disabled = true;
   [sendBtn, retryBtn].forEach(btn => { btn.disabled = true; btn.textContent = translate('sending'); });
 
   let saved = false;
@@ -279,6 +290,7 @@ async function submitFeedback(){
   }
 
   sendBtn.disabled = false;
+  backBtn.disabled = false;
   sendBtn.textContent = translate('send');
   retryBtn.disabled = false;
   retryBtn.textContent = translate('tryAgain');

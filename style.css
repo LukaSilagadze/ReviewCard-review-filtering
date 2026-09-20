@@ -44,7 +44,7 @@ body {
   width: 100%;
   max-width: 380px;
   min-height: 520px;
-  padding: 44px 30px 30px;
+  padding: 76px 30px 30px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 28px;
@@ -69,11 +69,13 @@ body {
 }
 
 .language-picker summary {
-  width: 32px;
-  height: 32px;
-  padding: 5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 10px;
   border: 1px solid transparent;
-  border-radius: 50%;
+  border-radius: 12px;
   background-color: var(--surface);
   cursor: pointer;
   list-style: none;
@@ -89,21 +91,21 @@ body {
 }
 
 .language-picker summary img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
 }
 
 .language-picker img {
   display: block;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   object-fit: contain;
 }
 
 .language-options {
   position: absolute;
-  top: 38px;
+  top: calc(100% + 6px);
   right: 0;
   padding: 4px;
   border: 1px solid var(--border);
@@ -113,12 +115,24 @@ body {
 }
 
 .language-options button {
-  display: block;
-  padding: 5px 7px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 44px;
+  padding: 8px 10px;
   border: 0;
   border-radius: 6px;
   background: transparent;
   cursor: pointer;
+}
+
+.language-picker summary,
+.language-options button {
+  color: var(--text);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .language-options button:hover,
@@ -305,6 +319,12 @@ body {
   border-bottom: 1px solid var(--border);
 }
 
+.phone:has(#stageFeedback[style*="flex"]) .biz-name {
+  margin-bottom: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
 .social-links { display: grid; gap: 10px; margin-top: 28px; }
 .social-heading {
   margin: 0 0 2px;
@@ -427,11 +447,34 @@ body {
 }
 
 .primary-btn:focus-visible,
+.back-btn:focus-visible,
 .tiny-link:focus-visible,
 textarea:focus-visible {
   outline: 3px solid var(--focus);
   outline-offset: 3px;
 }
+
+.back-btn {
+  position: absolute;
+  top: 17px;
+  left: 20px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 12px;
+  margin: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--control-surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+.back-btn:not(:disabled):hover { border-color: var(--focus); }
+.back-btn:disabled { color: var(--muted); cursor: default; }
 
 textarea {
   background: var(--input-surface);
@@ -553,7 +596,7 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
     max-width: none;
     min-height: 100vh;
     min-height: 100svh;
-    padding: 38px 22px 26px;
+    padding: 76px 22px 26px;
     border: none;
     border-radius: 0;
     box-shadow: none;

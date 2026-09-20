@@ -15,16 +15,20 @@
   <details class="language-picker">
     <summary aria-label="Choose language" data-i18n-aria="chooseLanguage">
       <img src="images/flag-georgia.svg" alt="Georgian">
+      <span id="selectedLanguageCode" aria-hidden="true">GE</span>
     </summary>
     <div class="language-options" aria-label="Languages" data-i18n-aria="languages">
       <button type="button" data-language="ka" aria-label="Georgian">
         <img src="images/flag-georgia.svg" alt="">
+        <span aria-hidden="true">GE</span>
       </button>
       <button type="button" data-language="en" aria-label="English">
         <img src="images/flag-uk.svg" alt="">
+        <span aria-hidden="true">EN</span>
       </button>
       <button type="button" data-language="ru" aria-label="Russian">
         <img src="images/flag-russia.svg" alt="">
+        <span aria-hidden="true">RU</span>
       </button>
     </div>
   </details>
@@ -75,8 +79,11 @@
   </div>
 
   <div class="stage" id="stageFeedback" style="display:none;">
+    <button class="back-btn" id="backToRatingBtn" type="button">
+      <span aria-hidden="true">←</span><span data-i18n="back">უკან</span>
+    </button>
     <p class="prompt-ka" data-i18n="feedbackPrompt">რა გავაუმჯობესოთ?</p>
-    <textarea id="feedbackText" placeholder="დაწერეთ აქ..." data-i18n-placeholder="feedbackPlaceholder"></textarea>
+    <textarea id="feedbackText" placeholder="დატოვე ანონიმური მესიჯი..." data-i18n-placeholder="feedbackPlaceholder"></textarea>
     <button class="primary-btn" id="sendFeedbackBtn" data-i18n="send">გაგზავნა</button>
     <button class="tiny-link" id="alsoGoogle" data-i18n="alsoGoogle">Prefer Google? Leave a review there instead</button>
   </div>
