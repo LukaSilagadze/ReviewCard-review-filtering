@@ -187,11 +187,24 @@ function applyAccentColor(value){
 
   const { r, g, b } = hexToRgb(hex);
   const darken = channel => Math.round(channel * 0.84);
+  const hover = { r: darken(r), g: darken(g), b: darken(b) };
   const root = document.documentElement.style;
 
   root.setProperty('--blue', hex);
   root.setProperty('--blue-dark', `rgb(${darken(r)}, ${darken(g)}, ${darken(b)})`);
   root.setProperty('--blue-rgb', `${r}, ${g}, ${b}`);
+  root.setProperty('--button-text', accentForeground({ r, g, b }));
+  root.setProperty('--button-hover-text', accentForeground(hover));
+}
+
+// Choose the higher-contrast foreground independently for normal and hover fills.
+function accentForeground({ r, g, b }){
+  const linear = channel => {
+    const value = channel / 255;
+    return value <= 0.04045 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4);
+  };
+  const luminance = 0.2126 * linear(r) + 0.7152 * linear(g) + 0.0722 * linear(b);
+  return (luminance + 0.05) / 0.05 >= 1.05 / (luminance + 0.05) ? '#000000' : '#ffffff';
 }
 
 function normalizeHexColor(value){

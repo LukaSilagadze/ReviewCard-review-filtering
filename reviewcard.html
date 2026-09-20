@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
 <title>ReviewCard</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -96,7 +97,13 @@
     <p class="error-box"><span data-i18n="errorLine1">ამ გვერდის ჩატვირთვისას რაღაც შეცდომა დაფიქსირდა.</span><br><span data-i18n="errorLine2">გთხოვთ, ხელახლა სცადოთ ბარათზე შეხება.</span></p>
   </div>
 
-  <p class="footer-note"><span class="powered-by-text">Powered by</span><img class="footer-logo" src="images/logo.png" alt="ReviewCard logo"></p>
+  <p class="footer-note">
+    <span class="powered-by-text">Powered by</span>
+    <picture>
+      <source srcset="images/logo-white.png" media="(prefers-color-scheme: dark)">
+      <img class="footer-logo" src="images/logo.png" alt="ReviewCard logo">
+    </picture>
+  </p>
 </div>
 
 <script src="script.js"></script>
