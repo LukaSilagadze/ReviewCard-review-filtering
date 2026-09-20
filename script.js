@@ -11,8 +11,8 @@ let currentLanguage = 'ka';
 
 const translations = {
   ka: {
+    followUs: 'გამოგვყევით',
     chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
-    step1: 'ნაბიჯი 1 / 2', step2: 'ნაბიჯი 2 / 2', complete: 'დასრულებულია',
     ratingPrompt: 'როგორ შეაფასებდით გამოცდილებას?', chooseExperience: 'აირჩიეთ თქვენი გამოცდილება',
     positive: 'დადებითად', negative: 'უარყოფითად', thanks: 'მადლობა!',
     googlePrompt: 'გთხოვთ შეგვაფასოთ გუგლზეც', feedbackPrompt: 'რა გავაუმჯობესოთ?',
@@ -25,8 +25,8 @@ const translations = {
     tryAgain: 'ხელახლა ცდა', emailDirectly: 'მოგვწერეთ ელფოსტით'
   },
   en: {
+    followUs: 'Follow us',
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
-    step1: 'Step 1 of 2', step2: 'Step 2 of 2', complete: 'Complete',
     ratingPrompt: 'How would you rate your experience?', chooseExperience: 'Choose your experience',
     positive: 'Positive', negative: 'Negative', thanks: 'Thank you!',
     googlePrompt: 'Please leave us a review on Google too', feedbackPrompt: 'What can we improve?',
@@ -39,8 +39,8 @@ const translations = {
     tryAgain: 'Try again', emailDirectly: 'Email us directly'
   },
   ru: {
+    followUs: 'Подписывайтесь на нас',
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
-    step1: 'Шаг 1 из 2', step2: 'Шаг 2 из 2', complete: 'Готово',
     ratingPrompt: 'Как бы вы оценили свой опыт?', chooseExperience: 'Оцените свой опыт',
     positive: 'Положительно', negative: 'Отрицательно', thanks: 'Спасибо!',
     googlePrompt: 'Пожалуйста, оставьте нам отзыв и в Google', feedbackPrompt: 'Что мы можем улучшить?',
@@ -91,7 +91,7 @@ function show(id){
 async function loadBusiness(){
   if(!bizId){ show('stageError'); return; }
   try{
-    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email`;
+    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email,facebook_url,facebook_username,instagram_url,instagram_username`;
     const res = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
@@ -113,6 +113,7 @@ async function loadBusiness(){
     const businessName = document.getElementById('bizName');
     businessName.removeAttribute('data-i18n');
     businessName.textContent = business.name;
+    renderSocialLinks(row);
 
     if(business.accentColor){
       applyAccentColor(business.accentColor);
@@ -135,6 +136,37 @@ async function loadBusiness(){
   }catch(err){
     show('stageError');
   }
+}
+
+function socialProfileUrl(value, platform){
+  const domain = { facebook: 'facebook.com', instagram: 'instagram.com' }[platform];
+  if(!domain || typeof value !== 'string' || !value.trim()){ return null; }
+  try{
+    const url = new URL(value.trim());
+    if(url.protocol !== 'https:' || url.username || url.password || url.port){ return null; }
+    if(url.hostname !== domain && !url.hostname.endsWith(`.${domain}`)){ return null; }
+    return url.href;
+  }catch(err){ return null; }
+}
+
+function renderSocialLinks(row){
+  let visibleCount = 0;
+  ['facebook', 'instagram'].forEach(platform => {
+    const link = document.getElementById(`${platform}Link`);
+    const url = socialProfileUrl(row[`${platform}_url`], platform);
+    link.hidden = !url;
+    link.removeAttribute('href');
+    link.removeAttribute('aria-label');
+    document.getElementById(`${platform}Username`).textContent = '';
+    if(!url){ return; }
+    const username = row[`${platform}_username`];
+    const label = typeof username === 'string' && username.trim() ? username.trim() : row.name;
+    link.href = url;
+    link.setAttribute('aria-label', `${platform === 'facebook' ? 'Facebook' : 'Instagram'}: ${row.name} — ${label}`);
+    document.getElementById(`${platform}Username`).textContent = label;
+    visibleCount++;
+  });
+  document.getElementById('socialLinks').hidden = visibleCount === 0;
 }
 
 function preconnectToGoogle(url){

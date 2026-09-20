@@ -13,6 +13,7 @@
 }
 
 * { box-sizing: border-box; }
+[hidden] { display: none !important; }
 
 body {
   margin: 0;
@@ -57,11 +58,11 @@ body {
 }
 
 .language-picker summary {
-  width: 28px;
-  height: 20px;
-  padding: 0;
-  border: 1px solid var(--line);
-  border-radius: 2px;
+  width: 32px;
+  height: 32px;
+  padding: 5px;
+  border: 1px solid transparent;
+  border-radius: 50%;
   background-color: var(--white);
   cursor: pointer;
   list-style: none;
@@ -77,21 +78,21 @@ body {
 }
 
 .language-picker summary img {
-  width: 100%;
-  height: 100%;
+  width: 20px;
+  height: 20px;
 }
 
 .language-picker img {
   display: block;
-  width: 22px;
-  height: 16px;
-  border-radius: 0;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
   object-fit: contain;
 }
 
 .language-options {
   position: absolute;
-  top: 26px;
+  top: 38px;
   right: 0;
   padding: 4px;
   border: 1px solid var(--line);
@@ -163,6 +164,7 @@ body {
 }
 
 .biz-name {
+  overflow-wrap: anywhere;
   margin: 0 0 36px;
   font-family: "Inter", "Noto Sans Georgian", sans-serif;
   font-size: 28px;
@@ -196,47 +198,16 @@ body {
   text-align: center;
 }
 
-.progress { width: 100%; margin-bottom: 28px; }
-.progress.compact { margin-bottom: 34px; }
-
-.progress-text {
-  display: block;
-  margin-bottom: 8px;
-  color: var(--blue);
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-align: center;
-  text-transform: uppercase;
-}
-
-.progress-track {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 6px;
-}
-
-.progress-segment {
-  height: 3px;
-  border: 1px solid var(--line);
-  border-radius: 3px;
-  background: var(--white);
-}
-
-.progress-segment.active {
-  border-color: var(--blue);
-  background: var(--blue);
-}
-
 .experience-actions {
   display: grid;
-  gap: 14px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
 }
 
 .experience-btn {
   width: 100%;
   min-height: 92px;
-  padding: 16px;
+  padding: 14px 8px;
   border: 1px solid var(--line);
   border-radius: 16px;
   background: var(--white);
@@ -244,8 +215,11 @@ body {
   cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 14px;
-  text-align: left;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+  gap: 10px;
+  text-align: center;
   box-shadow: 0 7px 0 rgba(var(--blue-rgb), 0.12);
   transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
 }
@@ -287,10 +261,10 @@ body {
 }
 
 .thumb-icon {
-  flex: 0 0 48px;
-  width: 48px;
-  height: 48px;
-  border-radius: 14px;
+  flex: 0 0 36px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   background: rgba(var(--green-rgb), 0.1);
   color: var(--green);
   display: grid;
@@ -298,8 +272,8 @@ body {
 }
 
 .thumb-icon svg {
-  width: 27px;
-  height: 27px;
+  width: 21px;
+  height: 21px;
   fill: none;
   stroke: currentColor;
   stroke-linecap: round;
@@ -309,6 +283,90 @@ body {
 
 .experience-btn strong {
   display: block;
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+#stageRating .prompt-ka { margin-bottom: 20px; }
+.phone:has(#stageRating[style*="flex"]) .biz-name {
+  margin-bottom: 24px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--line);
+}
+
+.social-links { display: grid; gap: 10px; margin-top: 28px; }
+.social-heading {
+  margin: 0 0 2px;
+  color: var(--gray);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+}
+.social-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  min-width: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  color: var(--charcoal);
+  background: var(--white);
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1.4;
+}
+.social-link img { flex: 0 0 24px; }
+.social-link span { min-width: 0; overflow-wrap: anywhere; }
+.social-link:hover { background: rgba(var(--blue-rgb), 0.06); border-color: var(--blue); }
+.social-link:focus-visible { outline: 3px solid var(--blue); outline-offset: 3px; }
+
+/* Adapted from Uiverse.io by OfficialRushO, without a Tailwind dependency. */
+.social-link-facebook,
+.social-link-instagram {
+  gap: 8px;
+  padding: 8px 16px;
+  border-color: transparent;
+  border-radius: 8px;
+  background: var(--social-gradient);
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: filter 200ms ease-in;
+}
+.social-link-facebook {
+  --social-gradient: linear-gradient(55deg, #2499f0 0%, #1877f2 45%, #2450c8 100%);
+}
+.social-link-instagram {
+  --social-gradient: linear-gradient(55deg, #f58529 0%, #ed4940 30%, #d51f55 60%, #b81787 100%);
+}
+.social-link-facebook > span,
+.social-link-instagram > span {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+  border-left: 2px solid #fff;
+  padding-left: 12px;
+  margin-left: 4px;
+}
+.social-link-facebook:hover,
+.social-link-instagram:hover {
+  background: var(--social-gradient);
+  border-color: transparent;
+  filter: brightness(0.93);
+}
+.social-link .social-icon {
+  flex: 0 0 24px;
+  width: 24px;
+  height: 24px;
+  font-size: 24px;
+  line-height: 24px;
+  text-align: center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .social-link-facebook,
+  .social-link-instagram { transition: none; }
 }
 
 .experience-btn strong {
@@ -474,11 +532,12 @@ textarea:focus { border-color: var(--blue); }
   text-align: center;
 }
 
-@media (max-width: 420px) {
+@media (max-width: 480px) {
   body { padding: 0; }
   .phone {
     max-width: none;
     min-height: 100vh;
+    min-height: 100svh;
     padding: 38px 22px 26px;
     border: none;
     border-radius: 0;

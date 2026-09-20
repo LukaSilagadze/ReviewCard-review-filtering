@@ -13,11 +13,11 @@
 <div class="phone">
   <details class="language-picker">
     <summary aria-label="Choose language" data-i18n-aria="chooseLanguage">
-      <img src="images/flag-georgia.webp" alt="Georgian">
+      <img src="images/flag-georgia.svg" alt="Georgian">
     </summary>
     <div class="language-options" aria-label="Languages" data-i18n-aria="languages">
       <button type="button" data-language="ka" aria-label="Georgian">
-        <img src="images/flag-georgia.webp" alt="">
+        <img src="images/flag-georgia.svg" alt="">
       </button>
       <button type="button" data-language="en" aria-label="English">
         <img src="images/flag-uk.svg" alt="">
@@ -34,10 +34,6 @@
   <p class="biz-name" id="bizName" data-i18n="loading">იტვირთება...</p>
 
   <div class="stage" id="stageRating" style="display:none;">
-    <div class="progress" aria-label="Step 1 of 2" data-i18n-aria="step1">
-      <span class="progress-text" data-i18n="step1">Step 1 of 2</span>
-      <span class="progress-track"><span class="progress-segment active"></span><span class="progress-segment"></span></span>
-    </div>
     <p class="prompt-ka" data-i18n="ratingPrompt">როგორ შეაფასებდით გამოცდილებას?</p>
     <div class="experience-actions" aria-label="Choose your experience" data-i18n-aria="chooseExperience">
       <button class="experience-btn positive" id="goodExperienceBtn" type="button">
@@ -57,17 +53,27 @@
         </span>
       </button>
     </div>
+    <nav class="social-links" id="socialLinks" aria-labelledby="socialHeading" hidden>
+      <p class="social-heading" id="socialHeading" data-i18n="followUs">გამოგვყევით</p>
+      <!-- Facebook button styling adapted from Uiverse.io by OfficialRushO. -->
+      <a class="social-link social-link-facebook" id="facebookLink" hidden>
+        <img src="images/facebook.svg" width="24" height="24" alt="" aria-hidden="true">
+        <span id="facebookUsername"></span>
+      </a>
+      <a class="social-link social-link-instagram" id="instagramLink" hidden>
+        <i class="fa-brands fa-instagram social-icon" aria-hidden="true"></i>
+        <span id="instagramUsername"></span>
+      </a>
+    </nav>
   </div>
 
   <div class="stage" id="stageGoogle" style="display:none;">
-    <div class="progress compact" aria-label="Step 2 of 2" data-i18n-aria="step2"><span class="progress-text" data-i18n="step2">Step 2 of 2</span><span class="progress-track"><span class="progress-segment active"></span><span class="progress-segment active"></span></span></div>
     <div class="spinner"></div>
     <p class="prompt-ka" data-i18n="thanks">მადლობა!</p>
     <p class="prompt-ka" data-i18n="googlePrompt">გთხოვთ შეგვაფასოთ გუგლზეც</p>
   </div>
 
   <div class="stage" id="stageFeedback" style="display:none;">
-    <div class="progress" aria-label="Step 2 of 2" data-i18n-aria="step2"><span class="progress-text" data-i18n="step2">Step 2 of 2</span><span class="progress-track"><span class="progress-segment active"></span><span class="progress-segment active"></span></span></div>
     <p class="prompt-ka" data-i18n="feedbackPrompt">რა გავაუმჯობესოთ?</p>
     <textarea id="feedbackText" placeholder="დაწერეთ აქ..." data-i18n-placeholder="feedbackPlaceholder"></textarea>
     <button class="primary-btn" id="sendFeedbackBtn" data-i18n="send">გაგზავნა</button>
@@ -75,7 +81,6 @@
   </div>
 
   <div class="stage" id="stageThanks" style="display:none;">
-    <div class="progress compact" aria-label="Complete" data-i18n-aria="complete"><span class="progress-text" data-i18n="complete">Complete</span><span class="progress-track"><span class="progress-segment active"></span><span class="progress-segment active"></span></span></div>
     <div class="seal"><svg viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></div>
     <p class="prompt-ka" style="margin-bottom:6px;" data-i18n="thanks">მადლობა!</p>
   </div>
@@ -95,5 +100,6 @@
 </div>
 
 <script src="script.js"></script>
+<script src="https://kit.fontawesome.com/dc2d1e509b.js" crossorigin="anonymous" defer></script>
 </body>
 </html>
