@@ -233,7 +233,7 @@ body {
   width: 100%;
   min-height: 92px;
   padding: 14px 8px;
-  border: 1px solid var(--border);
+  border: 1px solid var(--accent-text);
   border-radius: 16px;
   background: var(--control-surface);
   color: var(--text);
@@ -256,7 +256,7 @@ body {
 }
 
 .experience-btn.positive {
-  border-color: rgba(var(--green-rgb), 0.35);
+  border-color: var(--green);
   box-shadow: 0 7px 0 rgba(var(--green-rgb), 0.13);
 }
 
@@ -266,7 +266,7 @@ body {
 }
 
 .experience-btn.negative {
-  border-color: rgba(var(--red-rgb), 0.35);
+  border-color: var(--red);
   box-shadow: 0 7px 0 rgba(var(--red-rgb), 0.12);
 }
 
@@ -340,7 +340,6 @@ body {
   min-height: 52px;
   min-width: 0;
   padding: 12px 14px;
-  border: 1px solid var(--border);
   border-radius: 12px;
   color: var(--text);
   background: var(--surface);
@@ -355,7 +354,8 @@ body {
 
 /* Adapted from Uiverse.io by OfficialRushO, without a Tailwind dependency. */
 .social-link-facebook,
-.social-link-instagram {
+.social-link-instagram,
+.social-link-tiktok {
   gap: 8px;
   padding: 8px 16px;
   border-color: transparent;
@@ -372,8 +372,12 @@ body {
 .social-link-instagram {
   --social-gradient: linear-gradient(55deg, #f58529 0%, #ed4940 30%, #d51f55 60%, #b81787 100%);
 }
+.social-link-tiktok {
+  --social-gradient: linear-gradient(55deg, #161823 0%, #252735 100%);
+}
 .social-link-facebook > span,
-.social-link-instagram > span {
+.social-link-instagram > span,
+.social-link-tiktok > span {
   display: flex;
   align-items: center;
   min-height: 28px;
@@ -382,7 +386,8 @@ body {
   margin-left: 4px;
 }
 .social-link-facebook:hover,
-.social-link-instagram:hover {
+.social-link-instagram:hover,
+.social-link-tiktok:hover {
   background: var(--social-gradient);
   border-color: transparent;
   filter: brightness(0.93);
@@ -397,7 +402,8 @@ body {
 }
 @media (prefers-reduced-motion: reduce) {
   .social-link-facebook,
-  .social-link-instagram { transition: none; }
+  .social-link-instagram,
+  .social-link-tiktok { transition: none; }
 }
 
 .experience-btn strong {

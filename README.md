@@ -5,7 +5,7 @@ Anonymous business feedback page with Supabase storage and queued email alerts.
 See [backend setup and deployment order](backend/README.md) before publishing
 changes to the feedback flow.
 
-For Facebook and Instagram links, follow [social profile setup](backend/SOCIALS-SETUP.md).
+For Facebook, Instagram, and TikTok links, follow [social profile setup](backend/SOCIALS-SETUP.md).
 Apply the social-columns migration before publishing the updated webpage.
 
 Run social-link checks with `node --test tests/socials.test.cjs`.

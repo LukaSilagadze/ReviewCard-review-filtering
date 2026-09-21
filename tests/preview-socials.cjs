@@ -22,10 +22,11 @@ http.createServer((req, res) => {
     const row = { name: url.searchParams.has('long') ? 'A very long business name without clipping' : 'Garden Cafe',
       google_review_link: 'https://www.google.com/', logo_url: null,
       facebook_url: 'https://www.facebook.com/gardencafe', facebook_username: 'garden.cafe',
-      instagram_url: 'https://www.instagram.com/gardencafe/', instagram_username: '@garden.cafe' };
+      instagram_url: 'https://www.instagram.com/gardencafe/', instagram_username: '@garden.cafe',
+      tiktok_url: 'https://www.tiktok.com/@gardencafe', tiktok_username: '@gardencafe' };
     if (url.searchParams.has('long')) row.instagram_username = '@' + 'verylongusername'.repeat(5);
-    if (url.searchParams.has('none')) { row.facebook_url = null; row.instagram_url = null; }
-    if (url.searchParams.has('one')) row.facebook_url = 'https://evil.test/';
+    if (url.searchParams.has('none')) { row.facebook_url = null; row.instagram_url = null; row.tiktok_url = null; }
+    if (url.searchParams.has('one')) { row.facebook_url = 'https://evil.test/'; row.tiktok_url = null; }
     if (url.searchParams.has('accent')) row.accent_color = url.searchParams.get('accent');
     const fixture = `<script>window.fetch=async()=>({ok:true,json:async()=>[${JSON.stringify(row)}]});</script>`;
     const language = ['ka', 'en', 'ru'].includes(url.searchParams.get('lang')) ? url.searchParams.get('lang') : 'ka';
