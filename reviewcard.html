@@ -74,6 +74,10 @@
         <span id="tiktokUsername"></span>
       </a>
     </nav>
+    <button class="wifi-button" id="joinWifiBtn" type="button" aria-haspopup="dialog" hidden>
+      <i class="fa-solid fa-wifi" aria-hidden="true"></i>
+      <span data-i18n="joinWifi">Wi-Fi-ზე დაკავშირება</span>
+    </button>
   </div>
 
   <div class="stage" id="stageGoogle" style="display:none;">
@@ -117,6 +121,20 @@
   </p>
 </div>
 
+<dialog class="wifi-dialog" id="wifiDialog" aria-labelledby="wifiTitle">
+  <div class="wifi-dialog-heading">
+    <h2 id="wifiTitle" data-i18n="joinWifi">Wi-Fi-ზე დაკავშირება</h2>
+    <button class="wifi-close" id="closeWifiBtn" type="button" data-i18n-aria="closeWifi" aria-label="დახურვა" autofocus>×</button>
+  </div>
+  <dl class="wifi-details">
+    <dt data-i18n="wifiSsid">ქსელის სახელი</dt>
+    <dd id="wifiSsid"></dd>
+    <dt data-i18n="wifiPassword">პაროლი</dt>
+    <dd id="wifiPassword"></dd>
+  </dl>
+  <button class="wifi-button" id="copyWifiBtn" type="button" data-i18n="copyPassword">პაროლის კოპირება</button>
+  <p id="wifiCopyStatus" class="wifi-copy-status" role="status" aria-live="polite"></p>
+</dialog>
 <script src="script.js"></script>
 <script src="https://kit.fontawesome.com/dc2d1e509b.js" crossorigin="anonymous" defer></script>
 </body>

@@ -24,11 +24,18 @@ http.createServer((req, res) => {
       facebook_url: 'https://www.facebook.com/gardencafe', facebook_username: 'garden.cafe',
       instagram_url: 'https://www.instagram.com/gardencafe/', instagram_username: '@garden.cafe',
       tiktok_url: 'https://www.tiktok.com/@gardencafe', tiktok_username: '@gardencafe' };
-    if (url.searchParams.has('long')) row.instagram_username = '@' + 'verylongusername'.repeat(5);
+    row.wifi_ssid = 'Garden Cafe Guest';
+    row.wifi_password = ' Welcome & enjoy! ';
+    if (url.searchParams.has('nowifi')) { row.wifi_ssid = null; row.wifi_password = null; }
+    if (url.searchParams.has('long')) {
+      row.instagram_username = '@' + 'verylongusername'.repeat(5);
+      row.wifi_ssid = 'LongGuestNetwork'.repeat(3);
+      row.wifi_password = 'long-password<&>'.repeat(4);
+    }
     if (url.searchParams.has('none')) { row.facebook_url = null; row.instagram_url = null; row.tiktok_url = null; }
     if (url.searchParams.has('one')) { row.facebook_url = 'https://evil.test/'; row.tiktok_url = null; }
     if (url.searchParams.has('accent')) row.accent_color = url.searchParams.get('accent');
-    const fixture = `<script>window.fetch=async()=>({ok:true,json:async()=>[${JSON.stringify(row)}]});</script>`;
+    const fixture = `<script>const previewFetch=window.fetch.bind(window);window.fetch=async(input,init)=>{const url=new URL(typeof input==='string'?input:input.url,location.href);if(url.hostname.endsWith('.supabase.co'))return {ok:true,json:async()=>[${JSON.stringify(row)}]};return previewFetch(input,init);};</script>`;
     const language = ['ka', 'en', 'ru'].includes(url.searchParams.get('lang')) ? url.searchParams.get('lang') : 'ka';
     data = data.toString().replace('<script src="script.js"></script>', fixture + '<script src="script.js"></script>' + `<script>applyLanguage(${JSON.stringify(language)});</script>`);
     const theme = url.searchParams.get('theme');

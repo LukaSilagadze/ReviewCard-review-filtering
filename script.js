@@ -11,6 +11,9 @@ let currentLanguage = 'ka';
 
 const translations = {
   ka: {
+    joinWifi: 'Wi-Fi-ზე დაკავშირება', closeWifi: 'დახურვა', wifiSsid: 'ქსელის სახელი',
+    wifiPassword: 'პაროლი', copyPassword: 'პაროლის კოპირება', wifiCopied: 'კოპირებულია',
+    wifiCopyFailed: 'კოპირება ვერ მოხერხდა. მონიშნეთ პაროლი და დააკოპირეთ ხელით.',
     back: 'უკან',
     followUs: 'გამოგვყევით',
     chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
@@ -26,6 +29,9 @@ const translations = {
     tryAgain: 'ხელახლა ცდა', emailDirectly: 'მოგვწერეთ ელფოსტით'
   },
   en: {
+    joinWifi: 'Join Wi-Fi', closeWifi: 'Close', wifiSsid: 'Network name',
+    wifiPassword: 'Password', copyPassword: 'Copy password', wifiCopied: 'Copied',
+    wifiCopyFailed: 'Could not copy. Select the password and copy it manually.',
     back: 'Back',
     followUs: 'Follow us',
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
@@ -41,6 +47,9 @@ const translations = {
     tryAgain: 'Try again', emailDirectly: 'Email us directly'
   },
   ru: {
+    joinWifi: 'Подключиться к Wi-Fi', closeWifi: 'Закрыть', wifiSsid: 'Имя сети',
+    wifiPassword: 'Пароль', copyPassword: 'Скопировать пароль', wifiCopied: 'Скопировано',
+    wifiCopyFailed: 'Не удалось скопировать. Выделите пароль и скопируйте его вручную.',
     back: 'Назад',
     followUs: 'Подписывайтесь на нас',
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
@@ -95,7 +104,7 @@ function show(id){
 async function loadBusiness(){
   if(!bizId){ show('stageError'); return; }
   try{
-    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email,facebook_url,facebook_username,instagram_url,instagram_username,tiktok_url,tiktok_username`;
+    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email,facebook_url,facebook_username,instagram_url,instagram_username,tiktok_url,tiktok_username,wifi_ssid,wifi_password`;
     const res = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
@@ -118,6 +127,7 @@ async function loadBusiness(){
     businessName.removeAttribute('data-i18n');
     businessName.textContent = business.name;
     renderSocialLinks(row);
+    renderWifi(row);
 
     if(business.accentColor){
       applyAccentColor(business.accentColor);
@@ -171,6 +181,65 @@ function renderSocialLinks(row){
     visibleCount++;
   });
   document.getElementById('socialLinks').hidden = visibleCount === 0;
+}
+
+function renderWifi(row){
+  const configured = typeof row.wifi_ssid === 'string' && row.wifi_ssid.trim().length > 0
+    && typeof row.wifi_password === 'string' && row.wifi_password.trim().length > 0;
+  document.getElementById('joinWifiBtn').hidden = !configured;
+  document.getElementById('wifiSsid').textContent = configured ? row.wifi_ssid : '';
+  document.getElementById('wifiPassword').textContent = configured ? row.wifi_password : '';
+}
+
+function setupWifi(){
+  const dialog = document.getElementById('wifiDialog');
+  const trigger = document.getElementById('joinWifiBtn');
+  const close = document.getElementById('closeWifiBtn');
+  const copy = document.getElementById('copyWifiBtn');
+  const status = document.getElementById('wifiCopyStatus');
+  let session = 0;
+  trigger.addEventListener('click', () => {
+    session++;
+    status.textContent = '';
+    delete status.dataset.i18n;
+    copy.dataset.copied = 'false';
+    copy.dataset.i18n = 'copyPassword';
+    copy.textContent = translate('copyPassword');
+    dialog.showModal();
+  });
+  close.addEventListener('click', () => dialog.close());
+  dialog.addEventListener('close', () => { session++; trigger.focus(); });
+  // Both ends of the gesture must be outside, so selecting text cannot dismiss the popup.
+  const outside = event => {
+    const rect = dialog.getBoundingClientRect();
+    return event.clientX < rect.left || event.clientX > rect.right
+      || event.clientY < rect.top || event.clientY > rect.bottom;
+  };
+  let startedOutside = false;
+  dialog.addEventListener('pointerdown', event => { startedOutside = event.target === dialog && outside(event); });
+  dialog.addEventListener('click', event => {
+    if(startedOutside && event.target === dialog && outside(event)){ dialog.close(); }
+    startedOutside = false;
+  });
+  // Native modal dialog makes the background inert; wrap Tab between its two controls.
+  dialog.addEventListener('keydown', event => {
+    if(event.key !== 'Tab'){ return; }
+    if(event.shiftKey && document.activeElement === close){ event.preventDefault(); copy.focus(); }
+    else if(!event.shiftKey && document.activeElement === copy){ event.preventDefault(); close.focus(); }
+  });
+  copy.addEventListener('click', async () => {
+    const currentSession = session;
+    let key = 'wifiCopied';
+    try{
+      await navigator.clipboard.writeText(document.getElementById('wifiPassword').textContent);
+    }catch(err){ key = 'wifiCopyFailed'; }
+    if(currentSession !== session || !dialog.open){ return; }
+    status.dataset.i18n = key;
+    status.textContent = translate(key);
+    copy.dataset.copied = String(key === 'wifiCopied');
+    copy.dataset.i18n = key === 'wifiCopied' ? 'wifiCopied' : 'copyPassword';
+    copy.textContent = translate(copy.dataset.i18n);
+  });
 }
 
 function preconnectToGoogle(url){
@@ -331,4 +400,5 @@ document.addEventListener('click', (event) => {
 let savedLanguage = 'ka';
 try{ savedLanguage = localStorage.getItem('reviewcard-language') || 'ka'; }catch(err){ /* Use the default. */ }
 applyLanguage(savedLanguage);
+setupWifi();
 loadBusiness();

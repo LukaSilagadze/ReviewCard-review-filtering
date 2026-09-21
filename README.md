@@ -2,6 +2,9 @@
 
 Anonymous business feedback page with Supabase storage and queued email alerts.
 
+For the optional Join Wi-Fi button, follow [guest Wi-Fi setup](backend/WIFI-SETUP.md).
+Apply `004-business-wifi.sql` before publishing the updated frontend.
+
 See [backend setup and deployment order](backend/README.md) before publishing
 changes to the feedback flow.
 
