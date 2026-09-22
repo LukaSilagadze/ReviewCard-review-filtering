@@ -32,3 +32,10 @@ the device appearance while keeping the page open.
 Theme text and solid accent-button foregrounds are contrast-tested. The existing
 social gradients and their white text are preserved; their brighter regions do
 not uniformly meet 4.5:1 and are not covered by the solid-color contrast guarantee.
+
+# Review actions
+
+Every visitor can choose a direct Google review or an anonymous private message.
+The page does not ask for sentiment or assign private messages a star rating.
+Before deploying this frontend, follow [unrated-message setup](backend/UNRATED-MESSAGES.md)
+to migrate the database and update the email worker.

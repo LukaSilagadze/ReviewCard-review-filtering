@@ -7,8 +7,11 @@ scheduled trigger as a fallback. The base setup below uses the scheduled worker.
 The feedback insert and email job commit in one database transaction. The page
 shows success after that commit. Apps Script picks up pending jobs every minute,
 sends the existing Georgian email, and records success or schedules a retry.
-No customer identity or contact field is added. Only new negative feedback
-(`rating = 1`) is queued; existing feedback is not emailed retroactively.
+No customer identity or contact field is added. After applying the
+[unrated-message migration](UNRATED-MESSAGES.md), every new private message is
+queued, without an inferred rating. Existing feedback is not emailed retroactively.
+The original `001` migration alone queues only `rating = 1`; apply `005` before
+publishing the current frontend.
 
 ## Deployment order
 

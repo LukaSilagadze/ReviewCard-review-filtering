@@ -62,6 +62,19 @@ test('two comments for the same business both send, without a throttle', () => {
   assert.equal(state.released, true);
 });
 
+test('unrated queued messages send without a rating line; historical ratings remain', () => {
+  const jobs = [null, '1'].map((rating, i) => ({
+    id: String(i), lease_token: 'lease', biz_id: 'test', rating, comment: 'Private message'
+  }));
+  const { state, context } = harness({ jobs });
+  context.processFeedbackEmails();
+  assert.equal(state.sent.length, 2);
+  assert.ok(state.sent[0][2].includes('Private message'));
+  assert.ok(!state.sent[0][2].includes('Rating:'));
+  assert.ok(state.sent[1][2].includes('Rating: 1'));
+  assert.ok(state.acknowledgements.every(ack => ack.p_sent));
+});
+
 for (const [name, options, code] of [
   ['mail error', { mailFails: true }, 'mail_send_failed'],
   ['lookup error', { lookupFails: true }, 'business_lookup_failed'],
@@ -146,10 +159,11 @@ for (const fails of [false, true]) {
         calls++;
         assert.equal(url, 'db/rest/v1/feedbacks');
         assert.equal(JSON.parse(request.body).comment, 'Anonymous comment');
+        assert.equal(JSON.parse(request.body).rating, null);
         return { ok: !fails, status: fails ? 503 : 201 };
       }
     });
-    vm.runInContext(`const SUPABASE_URL='db', SUPABASE_KEY='key', bizId='test', rating=1;
+    vm.runInContext(`const SUPABASE_URL='db', SUPABASE_KEY='key', bizId='test';
       const business={notifyEmail:'owner@example.com',name:'Test'};
       function translate(key){return key;}
       ${page.slice(page.indexOf('function show('), page.indexOf('async function loadBusiness('))}

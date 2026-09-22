@@ -43,7 +43,7 @@ http.createServer((req, res) => {
       data = data.replace('href="style.css"', `href="style.css?theme=${theme}"`);
     }
     const stage = url.searchParams.get('stage');
-    if (['stageRating', 'stageFeedback', 'stageThanks', 'stageSendError', 'stageError', 'stageGoogle'].includes(stage)) {
+    if (['stageActions', 'stageFeedback', 'stageThanks', 'stageSendError', 'stageError'].includes(stage)) {
       data = data.replace('</body>', `<script>setTimeout(()=>show(${JSON.stringify(stage)}),0);</script></body>`);
     }
   }

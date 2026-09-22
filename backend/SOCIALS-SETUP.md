@@ -21,7 +21,7 @@
 3. Publish `reviewcard.html`, `script.js`, `style.css`, and the two new SVGs in
    `images/`. Verify all configured links on that business's `?biz=...` page.
 
-Social links appear only on the initial rating screen and open in the same tab.
+Social links appear only on the initial actions screen and open in the same tab.
 Blank or invalid URLs hide that platform. If all URLs are missing, the entire
 section is hidden. A blank username falls back to the business name. Display
 names are rendered exactly as entered; include @ yourself where desired.

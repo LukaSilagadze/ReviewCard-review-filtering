@@ -6,7 +6,6 @@ const SUPABASE_KEY = "sb_publishable_ZaKmf7Q58WLqFIrIOLkbPQ_55hT16Bn";
 const params = new URLSearchParams(window.location.search);
 const bizId = params.get('biz');
 let business = null;
-let rating = 0;
 let currentLanguage = 'ka';
 
 const translations = {
@@ -17,9 +16,8 @@ const translations = {
     back: 'უკან',
     followUs: 'გამოგვყევით',
     chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
-    ratingPrompt: 'როგორ შეაფასებდით გამოცდილებას?', chooseExperience: 'აირჩიეთ თქვენი გამოცდილება',
-    positive: 'დადებითად', negative: 'უარყოფითად', thanks: 'მადლობა!',
-    googlePrompt: 'გთხოვთ შეგვაფასოთ გუგლზეც', feedbackPrompt: 'რა გავაუმჯობესოთ?',
+    leaveGoogleReview: 'შეგვაფასეთ Google-ზე!', leaveMessage: 'დატოვეთ უკუკავშირი', thanks: 'მადლობა!',
+    feedbackPrompt: 'დატოვეთ ანონიმური უკუკავშირი',
     feedbackPlaceholder: 'დატოვე ანონიმური მესიჯი...', send: 'გაგზავნა', sending: 'იგზავნება...',
     alsoGoogle: 'გირჩევნიათ Google? დატოვეთ შეფასება იქ',
     errorLine1: 'ამ გვერდის ჩატვირთვისას რაღაც შეცდომა დაფიქსირდა.',
@@ -35,9 +33,8 @@ const translations = {
     back: 'Back',
     followUs: 'Follow us',
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
-    ratingPrompt: 'How would you rate your experience?', chooseExperience: 'Choose your experience',
-    positive: 'Positive', negative: 'Negative', thanks: 'Thank you!',
-    googlePrompt: 'Please leave us a review on Google too', feedbackPrompt: 'What can we improve?',
+    leaveGoogleReview: 'Leave a Google review', leaveMessage: 'Leave Feedback', thanks: 'Thank you!',
+    feedbackPrompt: 'Leave an anonymous feedback',
     feedbackPlaceholder: 'Leave an anonymous message...', send: 'Send', sending: 'Sending...',
     alsoGoogle: 'Prefer Google? Leave a review there instead',
     errorLine1: 'Something went wrong while loading this page.',
@@ -53,9 +50,8 @@ const translations = {
     back: 'Назад',
     followUs: 'Подписывайтесь на нас',
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
-    ratingPrompt: 'Как бы вы оценили свой опыт?', chooseExperience: 'Оцените свой опыт',
-    positive: 'Положительно', negative: 'Отрицательно', thanks: 'Спасибо!',
-    googlePrompt: 'Пожалуйста, оставьте нам отзыв и в Google', feedbackPrompt: 'Что мы можем улучшить?',
+    leaveGoogleReview: 'Оставить отзыв в Google', leaveMessage: 'Оставить сообщение', thanks: 'Спасибо!',
+    feedbackPrompt: 'Оставить сообщение',
     feedbackPlaceholder: 'Оставьте анонимное сообщение...', send: 'Отправить', sending: 'Отправка...',
     alsoGoogle: 'Предпочитаете Google? Оставьте отзыв там',
     errorLine1: 'При загрузке страницы произошла ошибка.',
@@ -96,7 +92,7 @@ function applyLanguage(language){
 }
 
 function show(id){
-  ['stageRating','stageGoogle','stageFeedback','stageThanks','stageSendError','stageError'].forEach(s=>{
+  ['stageActions','stageFeedback','stageThanks','stageSendError','stageError'].forEach(s=>{
     document.getElementById(s).style.display = (s===id) ? 'flex' : 'none';
   });
 }
@@ -146,7 +142,7 @@ async function loadBusiness(){
       document.querySelector('.brandmark').style.display = 'none';
     }
 
-    show('stageRating');
+    show('stageActions');
   }catch(err){
     show('stageError');
   }
@@ -299,25 +295,18 @@ function hexToRgb(hex){
 }
 
 function goToGoogle(){
-  show('stageGoogle');
-  setTimeout(() => { window.location.href = business.googleReviewLink; }, 0);
+  window.location.href = business.googleReviewLink;
 }
 
-document.getElementById('goodExperienceBtn').addEventListener('click', () => {
-  rating = 5;
-  goToGoogle();
-});
-
-document.getElementById('badExperienceBtn').addEventListener('click', () => {
-  rating = 1;
+document.getElementById('googleReviewBtn').addEventListener('click', goToGoogle);
+document.getElementById('leaveMessageBtn').addEventListener('click', () => {
   show('stageFeedback');
+  document.getElementById('feedbackText').focus();
 });
-
 document.getElementById('alsoGoogle').addEventListener('click', goToGoogle);
-
-document.getElementById('backToRatingBtn').addEventListener('click', () => {
-  show('stageRating');
-  document.getElementById('badExperienceBtn').focus();
+document.getElementById('backToActionsBtn').addEventListener('click', () => {
+  show('stageActions');
+  document.getElementById('leaveMessageBtn').focus();
 });
 
 async function saveFeedback(comment){
@@ -329,7 +318,7 @@ async function saveFeedback(comment){
       'Content-Type': 'application/json',
       'Prefer': 'return=minimal'
     },
-    body: JSON.stringify({ biz_id: bizId, rating: rating, comment: comment })
+    body: JSON.stringify({ biz_id: bizId, rating: null, comment: comment })
   });
   if(!response.ok){
     throw new Error(`Feedback request failed with status ${response.status}`);
@@ -340,7 +329,7 @@ async function submitFeedback(){
   const comment = document.getElementById('feedbackText').value.trim();
   const sendBtn = document.getElementById('sendFeedbackBtn');
   const retryBtn = document.getElementById('retryFeedbackBtn');
-  const backBtn = document.getElementById('backToRatingBtn');
+  const backBtn = document.getElementById('backToActionsBtn');
   backBtn.disabled = true;
   [sendBtn, retryBtn].forEach(btn => { btn.disabled = true; btn.textContent = translate('sending'); });
 

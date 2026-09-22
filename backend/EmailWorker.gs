@@ -56,7 +56,7 @@ function processFeedbackEmails() {
             'ახალი უკუკავშირი კლიენტისგან ' + business.name + '-ზე',
             'თქვენმა მომხმარებელმა ახლახანს დატოვა ანონიმური უკუკავშირი თქვენი ბიზნესის შესახებ.\n\n' +
             'Business: ' + business.name + '\n' +
-            'Rating: ' + job.rating + '\n' +
+            (job.rating == null ? '' : 'Rating: ' + job.rating + '\n') +
             'Comment: ' + (job.comment || '(no comment left)')
           );
           sent = true;

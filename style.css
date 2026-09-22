@@ -21,6 +21,15 @@
   --green-rgb: 95, 143, 121;
   --red: #a66565;
   --red-rgb: 166, 101, 101;
+  --action-bg: #f8fafc;
+  --action-hover: #eef2f7;
+  --action-border: #e6eaf0;
+  --action-shadow: 0 3px 9px rgba(30, 45, 65, .08);
+  --message-icon-bg: #e6efff;
+  --message-icon-color: #2865ce;
+  --message-lines: #ffffff;
+  --wifi-icon-bg: #e5f2e9;
+  --wifi-icon-color: #368354;
 }
 
 * { box-sizing: border-box; }
@@ -223,97 +232,39 @@ body {
   text-align: center;
 }
 
-.experience-actions {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-}
-
-.experience-btn {
-  width: 100%;
-  min-height: 92px;
-  padding: 14px 8px;
-  border: 1px solid var(--accent-text);
-  border-radius: 16px;
-  background: var(--control-surface);
-  color: var(--text);
-  cursor: pointer;
+.review-actions { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; }
+.action-card {
   display: flex;
   align-items: center;
-  flex-direction: column;
-  justify-content: center;
+  gap: 12px;
+  width: 100%;
   min-width: 0;
-  gap: 10px;
-  text-align: center;
-  box-shadow: 0 7px 0 rgba(var(--blue-rgb), 0.12);
-  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+  min-height: 68px;
+  padding: 12px 14px;
+  border: 1px solid var(--action-border);
+  border-radius: 16px;
+  background: var(--action-bg);
+  color: var(--text);
+  box-shadow: var(--action-shadow);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 160ms ease, border-color 160ms ease;
 }
+.action-card:hover { background: var(--action-hover); border-color: var(--border); }
+.action-card:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.action-card > span:last-child { min-width: 0; overflow-wrap: anywhere; }
+.action-icon { display: grid; place-items: center; flex: 0 0 40px; width: 40px; height: 40px; border-radius: 50%; }
+.action-icon img, .action-icon svg { display: block; width: 24px; height: 24px; object-fit: contain; }
+.action-icon-google { background: #ffffff; }
+.action-icon-google img { width: 26px; height: 26px; }
+.action-icon-message { background: var(--message-icon-bg); color: var(--message-icon-color); }
+.action-icon-wifi { background: var(--wifi-icon-bg); color: var(--wifi-icon-color); }
 
-.experience-btn:hover {
-  border-color: var(--accent-text);
-  box-shadow: 0 9px 0 rgba(var(--blue-rgb), 0.16);
-  transform: translateY(-2px);
-}
-
-.experience-btn.positive {
-  border-color: var(--green);
-  box-shadow: 0 7px 0 rgba(var(--green-rgb), 0.13);
-}
-
-.experience-btn.positive:hover {
-  border-color: var(--green);
-  box-shadow: 0 9px 0 rgba(var(--green-rgb), 0.16);
-}
-
-.experience-btn.negative {
-  border-color: var(--red);
-  box-shadow: 0 7px 0 rgba(var(--red-rgb), 0.12);
-}
-
-.experience-btn.negative:hover {
-  border-color: var(--red);
-  box-shadow: 0 9px 0 rgba(var(--red-rgb), 0.15);
-}
-
-.experience-btn:active {
-  box-shadow: 0 2px 0 rgba(var(--blue-rgb), 0.18);
-  transform: translateY(4px);
-}
-
-.experience-btn:focus-visible {
-  outline: 3px solid var(--focus);
-  outline-offset: 3px;
-}
-
-.thumb-icon {
-  flex: 0 0 36px;
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: rgba(var(--green-rgb), 0.1);
-  color: var(--green);
-  display: grid;
-  place-items: center;
-}
-
-.thumb-icon svg {
-  width: 21px;
-  height: 21px;
-  fill: none;
-  stroke: currentColor;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-  stroke-width: 1.8;
-}
-
-.experience-btn strong {
-  display: block;
-  overflow-wrap: anywhere;
-  line-height: 1.4;
-}
-
-#stageRating .prompt-ka { margin-bottom: 20px; }
-.phone:has(#stageRating[style*="flex"]) .biz-name {
+.phone:has(#stageActions[style*="flex"]) .biz-name {
   margin-bottom: 24px;
   padding-bottom: 24px;
   border-bottom: 1px solid var(--border);
@@ -342,7 +293,6 @@ body {
   font-size: 14px;
   cursor: pointer;
 }
-#joinWifiBtn { margin-top: 20px; }
 .wifi-button .fa-wifi { flex-shrink: 0; font-size: 18px; }
 .wifi-button:hover, .wifi-close:hover { background: var(--input-surface); border-color: var(--accent-text); }
 .wifi-button:focus-visible, .wifi-close:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
@@ -449,20 +399,10 @@ body:has(.wifi-dialog[open]) { overflow: hidden; }
   text-align: center;
 }
 @media (prefers-reduced-motion: reduce) {
+  .action-card,
   .social-link-facebook,
   .social-link-instagram,
   .social-link-tiktok { transition: none; }
-}
-
-.experience-btn strong {
-  font-family: "Inter", "Noto Sans Georgian", sans-serif;
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.experience-btn.negative .thumb-icon {
-  background: rgba(var(--red-rgb), 0.1);
-  color: var(--red);
 }
 
 .primary-btn {
@@ -584,17 +524,7 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
   text-underline-offset: 3px;
 }
 
-.spinner {
-  width: 26px;
-  height: 26px;
-  margin: 0 auto 22px;
-  border: 2px solid var(--border);
-  border-top-color: var(--accent-text);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
 
-@keyframes spin { to { transform: rotate(360deg); } }
 
 .seal {
   width: 64px;
@@ -676,10 +606,18 @@ textarea::placeholder { color: var(--muted); opacity: 1; }
     --green-rgb: 144, 207, 173;
     --red: #efa0a0;
     --red-rgb: 239, 160, 160;
+    --action-bg: #222b38;
+    --action-hover: #2b3748;
+    --action-border: #354253;
+    --action-shadow: 0 3px 10px rgba(0, 0, 0, .2);
+    --message-icon-bg: #293e60;
+    --message-icon-color: #8cb8ff;
+    --message-lines: #22324d;
+    --wifi-icon-bg: #263f35;
+    --wifi-icon-color: #8bd2a6;
   }
   .seal { border-color: var(--accent-text); }
   .seal svg { stroke: var(--accent-text); }
-  .spinner { border-top-color: var(--accent-text); }
   .brandmark .monogram { border-color: var(--accent-text); }
 }
 
