@@ -353,7 +353,8 @@ body:has(.wifi-dialog[open]) { overflow: hidden; }
 /* Adapted from Uiverse.io by OfficialRushO, without a Tailwind dependency. */
 .social-link-facebook,
 .social-link-instagram,
-.social-link-tiktok {
+.social-link-tiktok,
+.social-link-youtube {
   gap: 8px;
   padding: 8px 16px;
   border-color: transparent;
@@ -373,9 +374,13 @@ body:has(.wifi-dialog[open]) { overflow: hidden; }
 .social-link-tiktok {
   --social-gradient: linear-gradient(55deg, #161823 0%, #252735 100%);
 }
+.social-link-youtube {
+  --social-gradient: linear-gradient(55deg, #ff5964 0%, #ff2d3b 35%, #f20d23 68%, #d90018 100%);
+}
 .social-link-facebook > span,
 .social-link-instagram > span,
-.social-link-tiktok > span {
+.social-link-tiktok > span,
+.social-link-youtube > span {
   display: flex;
   align-items: center;
   min-height: 28px;
@@ -385,7 +390,8 @@ body:has(.wifi-dialog[open]) { overflow: hidden; }
 }
 .social-link-facebook:hover,
 .social-link-instagram:hover,
-.social-link-tiktok:hover {
+.social-link-tiktok:hover,
+.social-link-youtube:hover {
   background: var(--social-gradient);
   border-color: transparent;
   filter: brightness(0.93);
@@ -402,7 +408,8 @@ body:has(.wifi-dialog[open]) { overflow: hidden; }
   .action-card,
   .social-link-facebook,
   .social-link-instagram,
-  .social-link-tiktok { transition: none; }
+  .social-link-tiktok,
+  .social-link-youtube { transition: none; }
 }
 
 .primary-btn {

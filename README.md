@@ -8,8 +8,8 @@ Apply `004-business-wifi.sql` before publishing the updated frontend.
 See [backend setup and deployment order](backend/README.md) before publishing
 changes to the feedback flow.
 
-For Facebook, Instagram, and TikTok links, follow [social profile setup](backend/SOCIALS-SETUP.md).
-Apply the social-columns migration before publishing the updated webpage.
+For Facebook, Instagram, TikTok, and YouTube links, follow [social profile setup](backend/SOCIALS-SETUP.md).
+Apply the social-column migrations before publishing the updated webpage.
 
 Run social-link checks with `node --test tests/socials.test.cjs`.
 For a local preview with mock business data, run `node tests/preview-socials.cjs`

@@ -1,6 +1,6 @@
 # Business social profiles
 
-1. Run `002-business-socials.sql` and `003-business-tiktok.sql` in the Supabase SQL Editor before publishing
+1. Run `002-business-socials.sql`, `003-business-tiktok.sql`, and `006-business-youtube.sql` in the Supabase SQL Editor before publishing
    the updated frontend. Do not rerun the email-queue migration.
 2. In Table Editor → businesses, edit a test business and enter its real profiles:
 
@@ -13,13 +13,15 @@
 
    | tiktok_url | `https://www.tiktok.com/@your.business` |
    | tiktok_username | `@your.business` |
+   | youtube_url | `https://www.youtube.com/@yourbusiness` |
+   | youtube_username | `@yourbusiness` |
 
    These are public display settings, not credentials. Save the row. Use complete
-   HTTPS URLs on facebook.com, instagram.com, or tiktok.com (including their subdomains).
+   HTTPS URLs on facebook.com, instagram.com, tiktok.com, or youtube.com (including their subdomains).
    URLs with embedded credentials or nonstandard ports are rejected. Shortener
    domains are not supported. Use the actual profile destination.
-3. Publish `reviewcard.html`, `script.js`, `style.css`, and the two new SVGs in
-   `images/`. Verify all configured links on that business's `?biz=...` page.
+3. Publish `reviewcard.html`, `script.js`, and `style.css`. Verify all configured
+   links on that business's `?biz=...` page.
 
 Social links appear only on the initial actions screen and open in the same tab.
 Blank or invalid URLs hide that platform. If all URLs are missing, the entire

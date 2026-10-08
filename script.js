@@ -100,7 +100,7 @@ function show(id){
 async function loadBusiness(){
   if(!bizId){ show('stageError'); return; }
   try{
-    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email,facebook_url,facebook_username,instagram_url,instagram_username,tiktok_url,tiktok_username,wifi_ssid,wifi_password`;
+    const url = `${SUPABASE_URL}/rest/v1/businesses?biz_id=eq.${encodeURIComponent(bizId)}&select=name,google_review_link,logo_url,accent_color,notify_email,facebook_url,facebook_username,instagram_url,instagram_username,tiktok_url,tiktok_username,youtube_url,youtube_username,wifi_ssid,wifi_password`;
     const res = await fetch(url, {
       headers: {
         'apikey': SUPABASE_KEY,
@@ -149,7 +149,7 @@ async function loadBusiness(){
 }
 
 function socialProfileUrl(value, platform){
-  const domain = { facebook: 'facebook.com', instagram: 'instagram.com', tiktok: 'tiktok.com' }[platform];
+  const domain = { facebook: 'facebook.com', instagram: 'instagram.com', tiktok: 'tiktok.com', youtube: 'youtube.com' }[platform];
   if(!domain || typeof value !== 'string' || !value.trim()){ return null; }
   try{
     const url = new URL(value.trim());
@@ -161,7 +161,7 @@ function socialProfileUrl(value, platform){
 
 function renderSocialLinks(row){
   let visibleCount = 0;
-  ['facebook', 'instagram', 'tiktok'].forEach(platform => {
+  ['facebook', 'instagram', 'tiktok', 'youtube'].forEach(platform => {
     const link = document.getElementById(`${platform}Link`);
     const url = socialProfileUrl(row[`${platform}_url`], platform);
     link.hidden = !url;
@@ -172,7 +172,7 @@ function renderSocialLinks(row){
     const username = row[`${platform}_username`];
     const label = typeof username === 'string' && username.trim() ? username.trim() : row.name;
     link.href = url;
-    link.setAttribute('aria-label', `${{ facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok' }[platform]}: ${row.name} — ${label}`);
+    link.setAttribute('aria-label', `${{ facebook: 'Facebook', instagram: 'Instagram', tiktok: 'TikTok', youtube: 'YouTube' }[platform]}: ${row.name} — ${label}`);
     document.getElementById(`${platform}Username`).textContent = label;
     visibleCount++;
   });
