@@ -11,8 +11,7 @@ let currentLanguage = 'ka';
 const translations = {
   ka: {
     joinWifi: 'Wi-Fi-ზე დაკავშირება', closeWifi: 'დახურვა', wifiSsid: 'ქსელის სახელი',
-    wifiPassword: 'პაროლი', copyPassword: 'პაროლის კოპირება', wifiCopied: 'კოპირებულია',
-    wifiCopyFailed: 'კოპირება ვერ მოხერხდა. მონიშნეთ პაროლი და დააკოპირეთ ხელით.',
+    wifiPassword: 'პაროლი',
     back: 'უკან',
     followUs: 'გამოგვყევით',
     chooseLanguage: 'ენის არჩევა', languages: 'ენები', loading: 'იტვირთება...',
@@ -28,8 +27,7 @@ const translations = {
   },
   en: {
     joinWifi: 'Join Wi-Fi', closeWifi: 'Close', wifiSsid: 'Network name',
-    wifiPassword: 'Password', copyPassword: 'Copy password', wifiCopied: 'Copied',
-    wifiCopyFailed: 'Could not copy. Select the password and copy it manually.',
+    wifiPassword: 'Password',
     back: 'Back',
     followUs: 'Follow us',
     chooseLanguage: 'Choose language', languages: 'Languages', loading: 'Loading...',
@@ -45,8 +43,7 @@ const translations = {
   },
   ru: {
     joinWifi: 'Подключиться к Wi-Fi', closeWifi: 'Закрыть', wifiSsid: 'Имя сети',
-    wifiPassword: 'Пароль', copyPassword: 'Скопировать пароль', wifiCopied: 'Скопировано',
-    wifiCopyFailed: 'Не удалось скопировать. Выделите пароль и скопируйте его вручную.',
+    wifiPassword: 'Пароль',
     back: 'Назад',
     followUs: 'Подписывайтесь на нас',
     chooseLanguage: 'Выбрать язык', languages: 'Языки', loading: 'Загрузка...',
@@ -191,20 +188,11 @@ function setupWifi(){
   const dialog = document.getElementById('wifiDialog');
   const trigger = document.getElementById('joinWifiBtn');
   const close = document.getElementById('closeWifiBtn');
-  const copy = document.getElementById('copyWifiBtn');
-  const status = document.getElementById('wifiCopyStatus');
-  let session = 0;
   trigger.addEventListener('click', () => {
-    session++;
-    status.textContent = '';
-    delete status.dataset.i18n;
-    copy.dataset.copied = 'false';
-    copy.dataset.i18n = 'copyPassword';
-    copy.textContent = translate('copyPassword');
     dialog.showModal();
   });
   close.addEventListener('click', () => dialog.close());
-  dialog.addEventListener('close', () => { session++; trigger.focus(); });
+  dialog.addEventListener('close', () => trigger.focus());
   // Both ends of the gesture must be outside, so selecting text cannot dismiss the popup.
   const outside = event => {
     const rect = dialog.getBoundingClientRect();
@@ -216,25 +204,6 @@ function setupWifi(){
   dialog.addEventListener('click', event => {
     if(startedOutside && event.target === dialog && outside(event)){ dialog.close(); }
     startedOutside = false;
-  });
-  // Native modal dialog makes the background inert; wrap Tab between its two controls.
-  dialog.addEventListener('keydown', event => {
-    if(event.key !== 'Tab'){ return; }
-    if(event.shiftKey && document.activeElement === close){ event.preventDefault(); copy.focus(); }
-    else if(!event.shiftKey && document.activeElement === copy){ event.preventDefault(); close.focus(); }
-  });
-  copy.addEventListener('click', async () => {
-    const currentSession = session;
-    let key = 'wifiCopied';
-    try{
-      await navigator.clipboard.writeText(document.getElementById('wifiPassword').textContent);
-    }catch(err){ key = 'wifiCopyFailed'; }
-    if(currentSession !== session || !dialog.open){ return; }
-    status.dataset.i18n = key;
-    status.textContent = translate(key);
-    copy.dataset.copied = String(key === 'wifiCopied');
-    copy.dataset.i18n = key === 'wifiCopied' ? 'wifiCopied' : 'copyPassword';
-    copy.textContent = translate(copy.dataset.i18n);
   });
 }
 
